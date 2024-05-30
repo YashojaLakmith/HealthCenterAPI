@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+using Services.DataTransferObjects.Common;
+using Services.DataTransferObjects.DiagnosticRequest;
+
 namespace WebAPI.Controllers;
 
 [ApiController]
@@ -7,34 +10,43 @@ namespace WebAPI.Controllers;
 public class DiagnosticRequestController : ControllerBase
 {
     [HttpPost]
-    public Task<IActionResult> CreateDiagnosticRequestAsync([FromBody] object diagnosticRequest)
+    public Task<IActionResult> CreateDiagnosticRequestAsync(
+        [FromBody] NewDiagnosticRequest diagnosticRequest)
     {
         throw new NotImplementedException();
     }
 
     [HttpGet]
     [Route(@"user/{userId}/")]
-    public Task<IActionResult> ListUserDiagnosticRequestsAsync([FromRoute] string userId, [FromQuery] bool exceptCompleted, [FromQuery] object pagination)
+    public Task<IActionResult> ListUserDiagnosticRequestsAsync(
+        [FromRoute] string userId,
+        [FromQuery] Pagination pagination,
+        [FromQuery] bool exceptCompleted = true)
     {
         throw new NotImplementedException();
     }
 
     [HttpGet]
     [Route(@"doctor/{docId}/")]
-    public Task<IActionResult> ListDoctorDiagnosticRequestsAsync([FromRoute] string docId, [FromQuery] bool exceptCompleted, [FromQuery] object pagination)
+    public Task<IActionResult> ListDoctorDiagnosticRequestsAsync(
+        [FromRoute] string docId,
+        [FromQuery] Pagination pagination,
+        [FromQuery] bool exceptCompleted = true)
     {
         throw new NotImplementedException();
     }
 
     [HttpGet]
-    public Task<IActionResult> GetDiagnosticRequestAsync([FromRoute] string requestId)
+    public Task<IActionResult> GetDiagnosticRequestAsync(
+        [FromRoute] string requestId)
     {
         throw new NotImplementedException();
     }
 
     [HttpDelete]
     [Route(@"{requestId}")]
-    public Task<IActionResult> RemoveDiagnosticRequestAsync([FromRoute] string requestId)
+    public Task<IActionResult> RemoveDiagnosticRequestAsync(
+        [FromRoute] string requestId)
     {
         throw new NotImplementedException();
     }

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+using Services.DataTransferObjects.Payment;
+
 namespace WebAPI.Controllers;
 
 [ApiController]
@@ -8,14 +10,16 @@ public class PaymentController : ControllerBase
 {
     [HttpPost]
     [Route(@"cash/")]
-    public Task<IActionResult> MakeCashPaymentAsync([FromBody] object cashPaymentInfo)
+    public Task<IActionResult> MakeCashPaymentAsync(
+        [FromBody] CashPayment cashPaymentInfo)
     {
         throw new NotImplementedException();
     }
 
     [HttpPost]
     [Route(@"card/")]
-    public Task<IActionResult> MakeCardPaymentAsync([FromBody] object cardPaymentInfo)
+    public Task<IActionResult> MakeCardPaymentAsync(
+        [FromBody] CardPayment cardPaymentInfo)
     {
         throw new NotImplementedException();
     }

@@ -1,11 +1,9 @@
-﻿using Services.DataTransferObjects.Common;
-
-namespace Services.DataTransferObjects.DiagnosticRequest;
+﻿namespace Services.DataTransferObjects.DiagnosticRequest;
 
 public record DiagnosticRequest_Detail(
     string RequestId,
-    Doctor Doctor,
-    Patient Patient,
+    Common.Doctor Doctor,
+    Common.Patient Patient,
     Diagnosys RequiredDiagnosys,
     DateTime IssuedDateTime,
     string Remarks,

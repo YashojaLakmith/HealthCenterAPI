@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+using Services.DataTransferObjects.Common;
+using Services.DataTransferObjects.Medicine;
+
 namespace WebAPI.Controllers;
 
 [ApiController]
@@ -7,21 +10,31 @@ namespace WebAPI.Controllers;
 public class MedicineController : ControllerBase
 {
     [HttpGet]
-    public Task<IActionResult> SearchMedicineAsync([FromBody] object filters, [FromQuery] object pagination)
+    public Task<IActionResult> SearchMedicineAsync(
+        [FromBody] MedicineFilter filters,
+        [FromQuery] Pagination pagination)
+    {
+        throw new NotImplementedException();
+    }
+
+    [HttpPost]
+    public Task<IActionResult> CreateMedicineAsync(
+        [FromBody] NewMedicine newMedicine)
     {
         throw new NotImplementedException();
     }
 
     [HttpGet]
     [Route(@"{medicineId}/")]
-    public Task<IActionResult> ViewMedicineAsync([FromRoute] string medicineId)
+    public Task<IActionResult> ViewMedicineAsync(
+        [FromRoute] string medicineId)
     {
         throw new NotImplementedException();
     }
 
-    [HttpGet]
-    [Route(@"{userId}/{prescriptionId}/")]
-    public Task<IActionResult> IssueMedicineAsync([FromRoute] string userId, [FromRoute] string prescriptionId)
+    [HttpDelete]
+    public Task<IActionResult> DeleteMedicineAsync(
+        [FromRoute] string medicineId)
     {
         throw new NotImplementedException();
     }

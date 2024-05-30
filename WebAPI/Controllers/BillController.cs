@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+using Services.DataTransferObjects.Common;
+
 namespace WebAPI.Controllers;
 
 [ApiController]
@@ -7,15 +9,28 @@ namespace WebAPI.Controllers;
 public class BillController : ControllerBase
 {
     [HttpGet]
-    [Route(@"{userId}/")]
-    public Task<IActionResult> ListBillsAsync([FromRoute] string userId, [FromQuery] bool excludePaid, [FromQuery] object pagination)
+    public Task<IActionResult> ListBillsAsync(
+        [FromQuery] Pagination pagination,
+        [FromQuery] string sortBy = @"default")
     {
         throw new NotImplementedException();
     }
 
     [HttpGet]
-    [Route(@"{userId}/{billId}/")]
-    public Task<IActionResult> ViewBillAsync([FromRoute] string userId, [FromRoute] string billId)
+    [Route(@"{userId}/")]
+    public Task<IActionResult> ListBillsByUserAsync(
+        [FromRoute] string userId,
+        [FromQuery] Pagination pagination,
+        [FromQuery] string sortBy = @"default",
+        [FromQuery] bool excludePaid = true)
+    {
+        throw new NotImplementedException();
+    }
+
+    [HttpGet]
+    [Route(@"view/{billId}/")]
+    public Task<IActionResult> ViewBillAsync(
+        [FromRoute] string billId)
     {
         throw new NotImplementedException();
     }

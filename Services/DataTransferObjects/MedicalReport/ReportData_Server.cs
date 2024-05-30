@@ -1,12 +1,10 @@
-﻿using Services.DataTransferObjects.Common;
-
-namespace Services.DataTransferObjects.MedicalReport;
+﻿namespace Services.DataTransferObjects.MedicalReport;
 
 public record ReportData_Server(
     string ReportId,
     string DiagnosticRequestId,
-    Patient Patient,
-    Doctor Doctor,
+    Common.Patient Patient,
+    Common.Doctor Doctor,
     ReportIssuer ReportIssuer,
     DateTime IssuedDateTime,
     string ReportAcceptance

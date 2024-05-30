@@ -5,5 +5,5 @@ public record NewMedicine(
     string MedicineName,
     string Family,
     double UnitOfMeasurement,
-    Pricing Pricing
+    MedicinePricing Pricing
     );

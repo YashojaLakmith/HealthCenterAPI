@@ -7,5 +7,5 @@ public record Medicine_DetaiView(
     string Family,
     string UnitofMeasurement,
     double MeasurementUnits,
-    Pricing Pricing    
+    MedicinePricing Pricing    
     );

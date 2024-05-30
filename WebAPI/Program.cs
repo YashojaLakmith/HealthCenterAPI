@@ -5,14 +5,21 @@ public class Program
     public static async Task Main()
     {
         var builder = WebApplication.CreateBuilder();
-        var env = builder.Environment;
-        var services = builder.Services;
+        ConfigureServices(builder.Services);
+        var app = builder.Build();
+        ConfigureMiddleware(builder.Environment, app);
+        await app.RunAsync();
+    }
 
+    private static void ConfigureServices(IServiceCollection services)
+    {
         services.AddControllers(o => o.SuppressAsyncSuffixInActionNames = false);
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
+    }
 
-        var app = builder.Build();
+    private static void ConfigureMiddleware(IWebHostEnvironment env, WebApplication app)
+    {
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
@@ -29,7 +36,4 @@ public class Program
         app.UseRouting();
         app.UseAuthorization();
         app.MapControllers();
-
-        await app.RunAsync();
-    }
-}
+    }}

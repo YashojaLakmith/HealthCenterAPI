@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+using Services.DataTransferObjects.LoginAndPasswords;
+
 namespace WebAPI.Controllers;
 
 [ApiController]
@@ -8,13 +10,16 @@ public class ForgottenPasswordController : ControllerBase
 {
     [HttpGet]
     [Route(@"{userId}/")]
-    public Task<IActionResult> RequestPasswordResetTokenAsync([FromRoute] string userId, [FromQuery] object userType)
+    public Task<IActionResult> RequestPasswordResetTokenAsync(
+        [FromRoute] string userId,
+        [FromQuery] string userType)
     {
         throw new NotImplementedException();
     }
 
     [HttpPatch]
-    public Task<IActionResult> ResetPasswordUsingTokenAsync([FromBody] object tokenBasedPwResetParams)
+    public Task<IActionResult> ResetPasswordUsingTokenAsync(
+        [FromBody] TokenBasedPasswordResetData tokenBasedPwResetParams)
     {
         throw new NotImplementedException();
     }

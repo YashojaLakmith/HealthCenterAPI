@@ -1,11 +1,9 @@
-﻿using Services.DataTransferObjects.Common;
-
-namespace Services.DataTransferObjects.Prescription;
+﻿namespace Services.DataTransferObjects.Prescription;
 
 public record Prescription_DetailView_Pharmacist(
     string PrescriptionId,
-    Patient Patient,
-    Doctor IssuedDoctor,
+    Common.Patient Patient,
+    Common.Doctor IssuedDoctor,
     DateTime CreatedDateTime,
     IReadOnlyCollection<PrescribedMedicine> PrescribedMedicine
     );

@@ -1,10 +1,8 @@
-﻿using Services.DataTransferObjects.Common;
-
-namespace Services.DataTransferObjects.Appointment;
+﻿namespace Services.DataTransferObjects.Appointment;
 
 public record ApponimentDetaiView_Patient(
     string AppointmentId,
-    Doctor Doctor,
+    Common.Doctor Doctor,
     SessionInformation SessionInformation,
     string AppointmentStatus
     );

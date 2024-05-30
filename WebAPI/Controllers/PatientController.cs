@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+using Services.DataTransferObjects.Common;
+using Services.DataTransferObjects.Patient;
+
 namespace WebAPI.Controllers;
 
 [ApiController]
@@ -7,28 +10,42 @@ namespace WebAPI.Controllers;
 public class PatientController : ControllerBase
 {
     [HttpPost]
-    public Task<IActionResult> CreateAccountAsync([FromBody] object newPatientData)
+    [Route(@"generic/")]
+    public Task<IActionResult> CreateAccountAsync(
+        [FromBody] CreateNewPatient newPatientData)
+    {
+        throw new NotImplementedException();
+    }
+
+    [HttpPost]
+    [Route(@"associative/")]
+    public Task<IActionResult> CreateAssociativePatientAsync(
+        [FromBody] CreateAssociativePatient associativePatient)
     {
         throw new NotImplementedException();
     }
 
     [HttpGet]
     [Route(@"/associated/{userId}")]
-    public Task<IActionResult> ListAssociatedPatientsAsync([FromRoute] string userId, [FromQuery] object pagination)
+    public Task<IActionResult> ListAssociatedPatientsAsync(
+        [FromRoute] string userId,
+        [FromQuery] Pagination pagination)
     {
         throw new NotImplementedException();
     }
 
     [HttpGet]
     [Route(@"{patientId}")]
-    public Task<IActionResult> ViewPatientAsync([FromRoute] string patientId)
+    public Task<IActionResult> ViewPatientAsync(
+        [FromRoute] string patientId)
     {
         throw new NotImplementedException();
     }
 
     [HttpDelete]
     [Route(@"{patientId}")]
-    public Task<IActionResult> DeleteAccountAsync([FromRoute] string patientId)
+    public Task<IActionResult> DeleteAccountAsync(
+        [FromRoute] string patientId)
     {
         throw new NotImplementedException();
     }
