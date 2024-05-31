@@ -2,8 +2,10 @@
 using System.Security.Claims;
 
 using Microsoft.IdentityModel.Tokens;
+
+using SecretStore.Abstractions;
+
 using WebAPI.Abstractions.JWT;
-using WebAPI.Abstractions.Secrets;
 
 namespace WebAPI.Auth.JWT;
 
@@ -15,12 +17,12 @@ public class JwtHandler : IJwtHandler
     private readonly JwtSecurityTokenHandler _handler;
     private readonly ILogger<IJwtHandler> _logger;
 
-    public JwtHandler(JwtIssueOptions jwtOptions, TokenValidationParameters validationParameters, IUserSecrets userSecrets, ILogger<IJwtHandler> logger)
+    public JwtHandler(JwtIssueOptions jwtOptions, TokenValidationParameters validationParameters, IJwtSecrets jwtSecrets, ILogger<IJwtHandler> logger)
     {
         _logger = logger;
         _jwtOptions = jwtOptions;
         _tokenValidationParameters = validationParameters;
-        _credentials = ConfigureCredentials(userSecrets.GetJwtSigningKeyAsync(), SecurityAlgorithms.HmacSha256);
+        _credentials = ConfigureCredentials(jwtSecrets.GetJwtSigningKeyAsync(), SecurityAlgorithms.HmacSha256);
         _handler = new();
     }
 
@@ -110,7 +112,7 @@ public static class JwtHandlerExtension
         {
             var issueOptions = o.GetRequiredService<JwtIssueOptions>();
             var validationParams = o.GetRequiredService<TokenValidationParameters>();
-            var secrets = o.GetRequiredService<IUserSecrets>();
+            var secrets = o.GetRequiredService<IJwtSecrets>();
             var logger = o.GetRequiredService<ILogger<IJwtHandler>>();
 
             configureIssueOptions(issueOptions);

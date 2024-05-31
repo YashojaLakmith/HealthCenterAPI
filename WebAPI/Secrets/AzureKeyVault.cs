@@ -1,49 +1,39 @@
 ﻿using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 
-using WebAPI.Abstractions.DataStore;
+using SecretStore.Abstractions;
 
 namespace WebAPI.Secrets;
 
-public class AzureKeyVaultStore : ICloudSecretStore
+public class AzureKeyVault : ICloudSecretStore
 {
     private readonly IConfiguration _configuration;
     private readonly string _keyVaultUri;
 
-    public AzureKeyVaultStore(IConfiguration configuration)
+    public AzureKeyVault(IConfiguration configuration)
     {
         _configuration = configuration;
         _keyVaultUri = $@"https://{GetKeyVaultName()}.vault.azure.net";
     }
 
-    public async Task<string> GetDbConnectionStringAsync()
+    public async Task<string> GetSecretAsync(string key)
     {
-        return await GetSecretAsync(SecretKeyNames.DBKey);
-    }
+        var client = CreateClient();
+        var secret = await client.GetSecretAsync(key);
 
-    public async Task<string> GetJwtSigningKeyAsync()
-    {
-        return await GetSecretAsync(SecretKeyNames.JwtKey);
+        return secret.Value.Value;
     }
 
     private string GetKeyVaultName()
     {
         var name = _configuration.GetValue<string?>(@"KeyVaultName", null);
 
-        if(name is not null)
+        if (name is not null)
         {
             return name;
         }
 
         throw new InvalidOperationException(@"Could not find Key vault name.");
-    }
-
-    private async Task<string> GetSecretAsync(string key)
-    {
-        var client = CreateClient();
-        var secret = await client.GetSecretAsync(key);
-
-        return secret.Value.Value;
     }
 
     private SecretClient CreateClient()
@@ -59,6 +49,6 @@ public static class AzureKeyVaultExtensions
 {
     public static IServiceCollection AddAzureKeyVault(this IServiceCollection services)
     {
-        return services.AddSingleton<ICloudSecretStore, AzureKeyVaultStore>();
+        return services.AddSingleton<ICloudSecretStore, AzureKeyVault>();
     }
 }

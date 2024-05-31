@@ -2,6 +2,6 @@
 
 namespace WebAPI.Abstractions.DataStore;
 
-public interface IUserSecretCache : IMemoryCache
+public interface ILocalSecretCache : IMemoryCache
 {
 }

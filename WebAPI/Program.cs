@@ -25,8 +25,9 @@ public class Program
         services.AddSwaggerGen();
         services.AddAuthentication(JwtAuthenticationHandler.SchemeName)
             .AddScheme<AuthenticationSchemeOptions, JwtAuthenticationHandler>(JwtAuthenticationHandler.SchemeName, null);
-        services.AddInMemorySecretStore();
-        services.AddUserSecrets();
+        services.AddInMemorySecretCache();
+        services.AddJwtSecrets();
+        services.AddDbSecrets();
 
         if (environment.IsDevelopment())
         {

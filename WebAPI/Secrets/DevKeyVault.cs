@@ -1,15 +1,10 @@
-﻿using WebAPI.Abstractions.DataStore;
+﻿using SecretStore.Abstractions;
 
 namespace WebAPI.Secrets;
 
 public class DevKeyVault : ICloudSecretStore
 {
-    public Task<string> GetDbConnectionStringAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<string> GetJwtSigningKeyAsync()
+    public Task<string> GetSecretAsync(string key)
     {
         throw new NotImplementedException();
     }

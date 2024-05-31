@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SecretStore.Abstractions\SecretStore.Abstractions.csproj" />
     <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
 
