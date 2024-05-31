@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.IdentityModel.Tokens;
 
 using WebAPI.Auth;
 using WebAPI.Auth.JWT;
@@ -12,40 +13,22 @@ public class Program
     public static async Task Main()
     {
         var builder = WebApplication.CreateBuilder();
-        ConfigureServices(builder.Environment, builder.Services);
+        ConfigureServiceContainer(builder.Environment, builder.Services);
         var app = builder.Build();
         ConfigureMiddleware(builder.Environment, app);
         await app.RunAsync();
     }
 
-    private static void ConfigureServices(IWebHostEnvironment environment, IServiceCollection services)
+    private static void ConfigureServiceContainer(IWebHostEnvironment environment, IServiceCollection services)
     {
-        services.AddControllers(o => o.SuppressAsyncSuffixInActionNames = false);
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
-        services.AddAuthentication(JwtAuthenticationHandler.SchemeName)
-            .AddScheme<AuthenticationSchemeOptions, JwtAuthenticationHandler>(JwtAuthenticationHandler.SchemeName, null);
-        services.AddInMemorySecretCache();
-        services.AddJwtSecrets();
-        services.AddDbSecrets();
+        var isDevelopmentEnv = environment.IsDevelopment();
 
-        if (environment.IsDevelopment())
-        {
-            services.AddDeveloperKeyStore();
-        }
-        else
-        {
-            services.AddAzureKeyVault();
-        }
-
-        services.AddJwtHandler(issueOptions =>
-        {
-            
-        }, 
-        validationOptions =>
-        {
-            
-        });
+        ConfigureControllers(services);
+        ConfigureSecretsAndKeyVault(services, isDevelopmentEnv);
+        ConfigureSwaggerGen(services);
+        ConfigureAuthentication(services);
+        ConfigureKeyVault(services, isDevelopmentEnv);
+        ConfigureJwtHandler(services);
     }
 
     private static void ConfigureMiddleware(IWebHostEnvironment env, WebApplication app)
@@ -67,4 +50,59 @@ public class Program
         app.UseRouting();
         app.UseAuthorization();
         app.MapControllers();
-    }}
+    }
+
+    private static void ConfigureControllers(IServiceCollection services)
+    {
+        services.AddControllers(options =>
+        {
+            options.SuppressAsyncSuffixInActionNames = false;
+        });
+    }
+
+    private static void ConfigureSecretsAndKeyVault(IServiceCollection services, bool isDevelopmentEnv)
+    {
+        services.AddInMemorySecretCache();
+        services.AddJwtSecrets();
+        services.AddDbSecrets();
+        ConfigureKeyVault(services, isDevelopmentEnv);
+    }
+
+    private static void ConfigureKeyVault(IServiceCollection services, bool isDevelopmentEnvironment)
+    {
+        if (isDevelopmentEnvironment)
+        {
+            services.AddDeveloperKeyStore();
+        }
+        else
+        {
+            services.AddAzureKeyVault();
+        }
+    }
+
+    private static void ConfigureSwaggerGen(IServiceCollection services)
+    {
+        services.AddSwaggerGen();
+    }
+
+    private static void ConfigureAuthentication(IServiceCollection services)
+    {
+        services.AddAuthentication(JwtAuthenticationHandler.SchemeName)
+            .AddScheme<AuthenticationSchemeOptions, JwtAuthenticationHandler>(JwtAuthenticationHandler.SchemeName, null);
+    }
+
+    private static void ConfigureJwtHandler(IServiceCollection services)
+    {
+        services.AddJwtHandler(ConfigureJwtIssueOptions, ConfigureTokenValidationOptions);
+    }
+
+    private static void ConfigureJwtIssueOptions(JwtIssueOptions issueOptions)
+    {
+
+    }
+
+    private static void ConfigureTokenValidationOptions(TokenValidationParameters tokenValidation)
+    {
+        
+    }
+}
