@@ -9,11 +9,12 @@ namespace WebAPI.Auth;
 
 public class JwtAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
-    private const string SessionTokenHeader = @"X-SessionToken";
-    private const string AuthHeaderName = @"Authorization";
     private readonly IJwtHandler _jwtHandler;
+    private const string AuthHeaderName = @"Authorization";
 
     public const string SchemeName = @"JWT_CUSTOM";
+    public const string SessionTokenHeader = @"X-SessionToken";
+    public const string SessionCookieName = @"Session";
 
     public JwtAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
         ILoggerFactory logger,
@@ -25,50 +26,78 @@ public class JwtAuthenticationHandler : AuthenticationHandler<AuthenticationSche
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        var requestToken = ExtractToken(Request.Headers);
-
-        if(requestToken is null)
+        if(TryExtractBearerToken(out var bearerToken))
         {
-            return Task.FromResult(AuthenticateResult.Fail(@"Invalid session token."));
+            return HandleBearerAuthenticationAsync(bearerToken);
         }
 
-        if(!_jwtHandler.TryValidateAndRefreshToken(requestToken, out var newToken, out var claims))
+        if(TryExtractSessionCookie(out var sessionCookie))
         {
-            return Task.FromResult(AuthenticateResult.Fail(@"Invalid session token."));
+            return HandleCookieAuthenticationAsync(sessionCookie);
+        }
+
+        var failedResult = AuthenticateResult.Fail(@"Could not find valid bearer token or session cookie.");
+        return Task.FromResult(failedResult);
+    }
+
+    private bool TryExtractBearerToken(out string token)
+    {
+        const int bearerLength = 7;
+        token = @"";
+        if(!Request.Headers.TryGetValue(AuthHeaderName, out var authHeader))
+        {
+            return false;
+        }
+
+        ReadOnlySpan<char> authHeaderAsSpan = authHeader.ToString();
+
+        if(authHeaderAsSpan.Length <= bearerLength)
+        {
+            return false;
+        }
+
+        var slice = authHeaderAsSpan[..7];
+        if(!slice.Equals(@"Bearer "))
+        {
+            return false;
+        }
+
+        token = authHeaderAsSpan[7..].ToString();
+        return true;
+    }
+
+    private Task<AuthenticateResult> HandleBearerAuthenticationAsync(string bearerToken)
+    {
+        if (!_jwtHandler.TryValidateAndRefreshToken(bearerToken, out var newToken, out var claims))
+        {
+            return Task.FromResult(AuthenticateResult.Fail(@"Could not authenticate the provided bearer token."));
         }
 
         var ticket = CreateAuthenticationTicket(claims);
-        AppendTokenToResponse(newToken, Response.Headers);
+        Response.Headers.Append(SessionTokenHeader, newToken);
         return Task.FromResult(AuthenticateResult.Success(ticket));
     }
 
-    private static string? ExtractToken(IHeaderDictionary headers)
+    private bool TryExtractSessionCookie(out string cookie)
     {
-        if(!headers.TryGetValue(AuthHeaderName, out var reqToken))
+        if(!Request.Cookies.TryGetValue(SessionCookieName, out cookie))
         {
-            return null;
+            return false;
         }
 
-        var reqTokenSpan = reqToken.ToString();
-
-        if (!reqTokenSpan.StartsWith(@"Bearer"))
-        {
-            return null;
-        }
-
-        var parts = reqTokenSpan.Split(@"Bearer", StringSplitOptions.TrimEntries);
-        
-        if(parts.Length == 2)
-        {
-            return parts[1];
-        }
-
-        return null;
+        return true;
     }
 
-    private static void AppendTokenToResponse(string token, IHeaderDictionary headers)
+    private Task<AuthenticateResult> HandleCookieAuthenticationAsync(string sessionCookie)
     {
-        headers.Append(SessionTokenHeader, token);
+        if (!_jwtHandler.TryValidateAndRefreshToken(sessionCookie, out var newToken, out var claims))
+        {
+            return Task.FromResult(AuthenticateResult.Fail(@"Could not authenticate the session token."));
+        }
+
+        var ticket = CreateAuthenticationTicket(claims);
+        Response.Cookies.Append(SessionCookieName, newToken);
+        return Task.FromResult(AuthenticateResult.Success(ticket));
     }
 
     private static AuthenticationTicket CreateAuthenticationTicket(IEnumerable<Claim> claims)
