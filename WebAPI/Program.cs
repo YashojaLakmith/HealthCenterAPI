@@ -1,3 +1,10 @@
+using Microsoft.AspNetCore.Authentication;
+
+using WebAPI.Auth;
+using WebAPI.Auth.JWT;
+using WebAPI.MemoryStore;
+using WebAPI.Secrets;
+
 namespace WebAPI;
 
 public class Program
@@ -5,17 +12,39 @@ public class Program
     public static async Task Main()
     {
         var builder = WebApplication.CreateBuilder();
-        ConfigureServices(builder.Services);
+        ConfigureServices(builder.Environment, builder.Services);
         var app = builder.Build();
         ConfigureMiddleware(builder.Environment, app);
         await app.RunAsync();
     }
 
-    private static void ConfigureServices(IServiceCollection services)
+    private static void ConfigureServices(IWebHostEnvironment environment, IServiceCollection services)
     {
         services.AddControllers(o => o.SuppressAsyncSuffixInActionNames = false);
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
+        services.AddAuthentication(JwtAuthenticationHandler.SchemeName)
+            .AddScheme<AuthenticationSchemeOptions, JwtAuthenticationHandler>(JwtAuthenticationHandler.SchemeName, null);
+        services.AddInMemorySecretStore();
+        services.AddUserSecrets();
+
+        if (environment.IsDevelopment())
+        {
+            services.AddDeveloperKeyStore();
+        }
+        else
+        {
+            services.AddAzureKeyVault();
+        }
+
+        services.AddJwtHandler(issueOptions =>
+        {
+            
+        }, 
+        validationOptions =>
+        {
+            
+        });
     }
 
     private static void ConfigureMiddleware(IWebHostEnvironment env, WebApplication app)
@@ -33,6 +62,7 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+        app.UseAuthentication();
         app.UseRouting();
         app.UseAuthorization();
         app.MapControllers();
