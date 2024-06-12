@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using Services.DataTransferObjects.Common;
-using Services.DataTransferObjects.Schedule;
+using WebAPI.DataTransferObjects.Common;
+using WebAPI.DataTransferObjects.Schedule;
 
 namespace WebAPI.Controllers;
 

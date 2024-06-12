@@ -1,4 +1,4 @@
-﻿using SecretStore.Abstractions;
+﻿using WebAPI.Abstractions.Secrets;
 
 namespace WebAPI.Secrets;
 

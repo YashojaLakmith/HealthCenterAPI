@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
 
-using Services.DataTransferObjects.Login;
+using Microsoft.AspNetCore.Mvc;
+
+using WebAPI.Abstractions.Services;
+using WebAPI.Authentication;
+using WebAPI.DataTransferObjects.Login;
+using WebAPI.Exceptions;
 
 namespace WebAPI.Controllers;
 
@@ -8,58 +13,75 @@ namespace WebAPI.Controllers;
 [Route(@"/auth/")]
 public class AuthController : ControllerBase
 {
-    [HttpPost]
-    [Route(@"login/patient/")]
-    public Task<IActionResult> PatientLoginAsync(
-        [FromBody] LoginInformation patientLoginData)
+    private readonly IAuthServices _authServices;
+    private readonly ILogger _logger;
+
+    public AuthController(IAuthServices authServices, ILogger logger)
     {
-        throw new NotImplementedException();
+        _authServices = authServices;
+        _logger = logger;
     }
 
     [HttpPost]
-    [Route(@"login/admin/")]
-    public Task<IActionResult> AdminLoginAsync(
-        [FromBody] LoginInformation adminLoginData)
+    [Route(@"login/")]
+    [ProducesResponseType<string>(200)]
+    [ProducesResponseType(200)]
+    [ProducesResponseType<string>(400)]
+    [ProducesResponseType(500)]
+    public async Task<IActionResult> LoginAsync(
+        [FromBody] LoginInformation patientLoginData,
+        [FromQuery] bool isBearerAuthentication = false)
     {
-        throw new NotImplementedException();
-    }
-
-    [HttpPost]
-    [Route(@"login/receptionist/")]
-    public Task<IActionResult> ReceptionistLogin(
-        [FromBody] LoginInformation receptionistLoginData)
-    {
-        throw new NotImplementedException();
-    }
-
-    [HttpPost]
-    [Route(@"login/doctor/")]
-    public Task<IActionResult> DoctorLoginAsync(
-        [FromBody] LoginInformation doctorLoginData)
-    {
-        throw new NotImplementedException();
-    }
-
-    [HttpPost]
-    [Route(@"login/pharmacist/")]
-    public Task<IActionResult> PharmacistLoginAsync(
-        [FromBody] LoginInformation pharmacistLoginData)
-    {
-        throw new NotImplementedException();
-    }
-
-    [HttpPost]
-    [Route(@"login/lab/")]
-    public Task<IActionResult> LabWorkerLoginAsync(
-        [FromBody] LoginInformation labWorkerLoginData)
-    {
-        throw new NotImplementedException();
+        try
+        {
+            var token = await _authServices.HandleLoginAsync(patientLoginData);
+            return TryReturnSession(token, isBearerAuthentication);
+        }
+        catch(AuthenticationFailureException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex, null);
+            throw;
+        }
     }
 
     [HttpGet]
     [Route(@"logout")]
-    public Task<IActionResult> LogoutAsync()
+    [ProducesResponseType(401)]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(500)]
+    public async Task<IActionResult> LogoutAsync()
     {
-        throw new NotImplementedException();
+        var token = GetToken();
+
+        if(token is null)
+        {
+            return Unauthorized();
+        }
+
+        await _authServices.HandleLogoutAsync(token);
+        return NoContent();
+    }
+
+    [NonAction]
+    private IActionResult TryReturnSession(string toksn, bool isBearerAuth)
+    {
+        if (!isBearerAuth)
+        {
+            Response.Cookies.Append(UserAuthenticationHandler.SessionCookieName, toksn);
+            return Ok();
+        }
+
+        return Ok(toksn);
+    }
+
+    private string? GetToken()
+    {
+        var claims = HttpContext.User.Claims;
+        var token = claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.AuthenticationInstant));
+        return token?.Value;
     }
 }

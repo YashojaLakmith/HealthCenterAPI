@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using Services.DataTransferObjects.LoginAndPasswords;
+using WebAPI.DataTransferObjects.LoginAndPasswords;
 
 namespace WebAPI.Controllers;
 

@@ -1,7 +1,7 @@
 ﻿using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 
-using SecretStore.Abstractions;
+using WebAPI.Abstractions.Secrets;
 
 namespace WebAPI.Secrets;
 

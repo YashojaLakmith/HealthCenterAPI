@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using Services.DataTransferObjects.Payment;
+using WebAPI.DataTransferObjects.Payment;
 
 namespace WebAPI.Controllers;
 

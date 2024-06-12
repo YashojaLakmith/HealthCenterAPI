@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using Services.DataTransferObjects.Common;
-using Services.DataTransferObjects.LoginAndPasswords;
-using Services.DataTransferObjects.SystemAdmin;
+using WebAPI.DataTransferObjects.Common;
+using WebAPI.DataTransferObjects.LoginAndPasswords;
+using WebAPI.DataTransferObjects.SystemAdmin;
 
 namespace WebAPI.Controllers;
 

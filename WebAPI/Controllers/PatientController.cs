@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using Services.DataTransferObjects.Common;
-using Services.DataTransferObjects.Patient;
+using WebAPI.DataTransferObjects.Common;
+using WebAPI.DataTransferObjects.Patient;
 
 namespace WebAPI.Controllers;
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using Services.DataTransferObjects.Common;
-using Services.DataTransferObjects.DiagnosticRequest;
+using WebAPI.DataTransferObjects.Common;
+using WebAPI.DataTransferObjects.DiagnosticRequest;
 
 namespace WebAPI.Controllers;
 

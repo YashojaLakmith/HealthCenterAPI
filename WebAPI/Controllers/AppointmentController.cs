@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using Services.DataTransferObjects.Appointment;
-using Services.DataTransferObjects.Common;
+using WebAPI.DataTransferObjects.Appointment;
+using WebAPI.DataTransferObjects.Common;
 
 namespace WebAPI.Controllers;
 

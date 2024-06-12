@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 
-using SecretStore.Abstractions;
-
 using WebAPI.Abstractions.DataStore;
+using WebAPI.Abstractions.Secrets;
 
 namespace WebAPI.Secrets;
 

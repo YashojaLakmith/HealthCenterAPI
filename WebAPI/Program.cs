@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.IdentityModel.Tokens;
 
-using WebAPI.Auth;
-using WebAPI.Auth.JWT;
+using WebAPI.Authentication;
 using WebAPI.MemoryStore;
 using WebAPI.Secrets;
+using WebAPI.Services;
+using WebAPI.Session;
 
 namespace WebAPI;
 
@@ -24,11 +24,12 @@ public class Program
         var isDevelopmentEnv = environment.IsDevelopment();
 
         ConfigureControllers(services);
+        ConfigureSessions(services);
         ConfigureSecretsAndKeyVault(services, isDevelopmentEnv);
         ConfigureSwaggerGen(services);
         ConfigureAuthentication(services);
         ConfigureKeyVault(services, isDevelopmentEnv);
-        ConfigureJwtHandler(services);
+        ConfigureServices(services);
     }
 
     private static void ConfigureMiddleware(IWebHostEnvironment env, WebApplication app)
@@ -60,6 +61,19 @@ public class Program
         });
     }
 
+    private static void ConfigureSessions(IServiceCollection services)
+    {
+        services.AddTokenBasedSessions(options =>
+        {
+            
+        });
+
+        services.AddRedisSessionCache(options =>
+        {
+            
+        });
+    }
+
     private static void ConfigureSecretsAndKeyVault(IServiceCollection services, bool isDevelopmentEnv)
     {
         services.AddInMemorySecretCache();
@@ -87,22 +101,12 @@ public class Program
 
     private static void ConfigureAuthentication(IServiceCollection services)
     {
-        services.AddAuthentication(JwtAuthenticationHandler.SchemeName)
-            .AddScheme<AuthenticationSchemeOptions, JwtAuthenticationHandler>(JwtAuthenticationHandler.SchemeName, null);
+        services.AddAuthentication(UserAuthenticationHandler.SchemeName)
+            .AddScheme<AuthenticationSchemeOptions, UserAuthenticationHandler>(UserAuthenticationHandler.SchemeName, null);
     }
 
-    private static void ConfigureJwtHandler(IServiceCollection services)
+    private static void ConfigureServices(IServiceCollection services)
     {
-        services.AddJwtHandler(ConfigureJwtIssueOptions, ConfigureTokenValidationOptions);
-    }
-
-    private static void ConfigureJwtIssueOptions(JwtIssueOptions issueOptions)
-    {
-
-    }
-
-    private static void ConfigureTokenValidationOptions(TokenValidationParameters tokenValidation)
-    {
-        
+        services.AddAuthSevices();
     }
 }

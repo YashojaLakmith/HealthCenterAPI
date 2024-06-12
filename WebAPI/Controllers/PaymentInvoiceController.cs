@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using Services.DataTransferObjects.Common;
-using Services.DataTransferObjects.PaymentInvoice;
+using WebAPI.DataTransferObjects.Common;
+using WebAPI.DataTransferObjects.PaymentInvoice;
 
 namespace WebAPI.Controllers;
 

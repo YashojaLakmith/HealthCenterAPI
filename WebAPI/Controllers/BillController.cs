@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using Services.DataTransferObjects.Common;
+using WebAPI.DataTransferObjects.Common;
 
 namespace WebAPI.Controllers;
 
