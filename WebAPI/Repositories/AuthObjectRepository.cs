@@ -30,7 +30,6 @@ public class AuthObjectRepository : IAuthObjectRepository
 
     private async Task<IDbConnection> CreateConnectionAsync()
     {
-        var connString = await _dbSecrets.GetDbConnectionStringAsync();
-        return new SqlConnection(connString);
+        throw new NotImplementedException();
     }
 }
