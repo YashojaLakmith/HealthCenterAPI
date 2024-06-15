@@ -9,7 +9,23 @@ public class Query
     public string Subject { get; set; }
     public string Body { get; set; }
     public DateTime SentOn { get; set; }
-    public bool HasAttended { get; set; }
+    public string? Reply { get; set; }
+    public DateTime? RepliedOn { get; set; }
 
-    public UserBase Sender { get; set; }
+    public IndependentPatient Sender { get; set; }
+
+    public override bool Equals(object? obj)
+    {
+        if(obj is Query q)
+        {
+            return GetHashCode() == q.GetHashCode() && QueryId.Equals(q.QueryId);
+        }
+
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return QueryId.GetHashCode();
+    }
 }

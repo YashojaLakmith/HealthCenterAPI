@@ -1,4 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Security.Cryptography;
+
+using Microsoft.EntityFrameworkCore;
+
+using WebAPI.Helpers;
 
 namespace WebAPI.Schema;
 
@@ -9,5 +13,19 @@ public class Credentials
     public byte[] Salt { get; set; }
     public DateTime LastLogin { get; set; }
 
-    public UserBase User { get; set; }
+    public IndependentPatient Patient { get; set; }
+    public EmployeeBase Employee { get; set; }
+
+    public bool IsPasswordCorrect(string password)
+    {
+        var pw = PasswordDerivation.DerivePassword(password, Salt);
+        return pw.SequenceEqual(PasswordHash);
+    }
+
+    public void ChangePassword(string password)
+    {
+        var len = Salt.Length;
+        Salt = RandomNumberGenerator.GetBytes(len);
+        PasswordHash = PasswordDerivation.DerivePassword(password, Salt);
+    }
 }

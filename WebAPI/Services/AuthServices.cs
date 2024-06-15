@@ -1,37 +1,53 @@
-﻿using WebAPI.Abstractions.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+
 using WebAPI.Abstractions.Services;
 using WebAPI.Abstractions.Session;
 using WebAPI.DataTransferObjects.Login;
+using WebAPI.EF;
 
 namespace WebAPI.Services;
 
 public class AuthServices : IAuthServices
 {
-    private readonly IAuthObjectRepository _authRepository;
-    private readonly ISessionManager _tokenManager;
+    private readonly ApplicationDbContext _context;
+    private readonly ISessionManager _session;
 
-    public AuthServices(IAuthObjectRepository authRepository, ISessionManager tokenManager)
+    public AuthServices(ApplicationDbContext context, ISessionManager session)
     {
-        _authRepository = authRepository;
-        _tokenManager = tokenManager;
+        _context = context;
+        _session = session;
     }
 
-    public async Task<string?> HandleLoginAsync(LoginInformation loginInformation)
+    public async Task<string?> HandlePatientLoginAsync(LoginInformation loginInformation)
     {
-        var authObject = await _authRepository.GetPasswordAuthenticationObjectAsync(loginInformation.UserId);
-        if (!authObject.TryAuthenticate(loginInformation, out var claims))
-        {
-            return null;
+        using var transaction = await BeginTransactionAsync();
+        var cred = await _context.Credentials
+            .FirstOrDefaultAsync(c => c.Employee.EmployeeId.Equals(loginInformation.UserId));
+
+        if(cred is not null)
+        {            
+            cred.LastLogin = DateTime.Now;
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
         }
 
-        var token = await _tokenManager.CreateTokenAsync(claims);
-        await _authRepository.UpdateSuccessfulAuthentication(authObject);
-        return token;
+        return cred?.ToString();
     }
 
-    public async Task HandleLogoutAsync(string token)
+    public Task<string?> HandleEmployeeLoginAsync(LoginInformation loginInformation)
     {
-        await _tokenManager.RevokeTokenAsync(token);
+        throw new NotImplementedException();
+    }
+
+    public Task HandleLogoutAsync(string token)
+    {
+        return _session.RevokeTokenAsync(token);
+    }
+
+    private Task<IDbContextTransaction> BeginTransactionAsync()
+    {
+        return _context.Database.BeginTransactionAsync();
     }
 }
 

@@ -18,9 +18,10 @@ public class ApplicationDbContext : DbContext
     public DbSet<DependentPatient> DependentPatients { get; set; }
     public DbSet<DiagnosticRequest> DiagnosticRequests { get; set; }
     public DbSet<DiagnosticTypes> DiagnosticTypes { get; set; }
+    public DbSet<PatientBase> PatientBase { get; set; }
     public DbSet<Doctor> Doctors { get; set; }
     public DbSet<Genders> Genders { get; set; }
-    public DbSet<IndividualPatient> IndividualPatients { get; set; }
+    public DbSet<IndependentPatient> IndividualPatients { get; set; }
     public DbSet<LabWorker> LabWorkers { get; set; }
     public DbSet<MedicalReport> MedicalReports { get; set; }
     public DbSet<Medicine> Medicines { get; set; }
@@ -35,6 +36,15 @@ public class ApplicationDbContext : DbContext
     public DbSet<Sessions> Sessions { get; set; }
     public DbSet<SysAdmin> SysAdmins { get; set; }
     public DbSet<UnitsOfMedicineMeasurement> UnitsOfMedicines { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<IndependentPatient>()
+            .HasMany(i => i.DependentPatients)
+            .WithOne(d => d.IndependentPatient)
+            .HasForeignKey(d => d.IndependentPatientId)
+            .OnDelete(DeleteBehavior.NoAction);
+    }
 }
 
 public static class PersistanceExtensions

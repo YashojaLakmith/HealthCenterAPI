@@ -4,6 +4,6 @@ namespace WebAPI.Abstractions.API;
 
 public interface IUserExtractor
 {
-    string? GetUserId();
-    Role? GetRole();
+    string GetUserId();
+    Role GetRole();
 }

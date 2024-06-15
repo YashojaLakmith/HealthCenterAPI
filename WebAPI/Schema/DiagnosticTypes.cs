@@ -1,14 +1,39 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebAPI.Schema;
 
-public class DiagnosticTypes
+public class DiagnosticTypes : IPayedService
 {
     [Key]
-    public string DiagnosticTypeId { get; set; }
-    public string DiagnosticTypeName { get; set; }
-    public string DiagnosticTypeDescription { get; set; }
-    public decimal PricePerDiagnosys { get; set; }
+    public string DiagnosticTypeName { get; private set; }
+    public string DiagnosticTypeDescription { get; private set; }
+    public decimal ServicePrice { get; private set; }
 
-    public ICollection<DiagnosticRequest> DiagnosticRequests { get; set; }
+    [NotMapped]
+    public string ServiceDescription { get => DiagnosticTypeDescription; }
+    [NotMapped]
+    public string ServiceName { get => DiagnosticTypeName; }
+
+    public DiagnosticTypes() { }
+
+    public static DiagnosticTypes CreateDiagnosticType(string typeName, string description, decimal price)
+    {
+        return new DiagnosticTypes()
+        {
+            DiagnosticTypeName = typeName,
+            DiagnosticTypeDescription = description,
+            ServicePrice = price
+        };
+    }
+
+    public void ChangeDescription(string newDescription)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ChangePrice(decimal price)
+    {
+        throw new NotImplementedException();
+    }
 }

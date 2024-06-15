@@ -34,7 +34,7 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var token = await _authServices.HandleLoginAsync(patientLoginData);
+            var token = await _authServices.HandlePatientLoginAsync(patientLoginData);
             return TryReturnSession(token, isBearerAuthentication);
         }
         catch(AuthenticationFailureException ex)

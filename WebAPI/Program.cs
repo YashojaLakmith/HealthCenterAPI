@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication;
 
 using WebAPI.Authentication;
+using WebAPI.EF;
 using WebAPI.MemoryStore;
 using WebAPI.Secrets;
 using WebAPI.Services;
@@ -29,6 +30,7 @@ public class Program
         ConfigureSwaggerGen(services);
         ConfigureAuthentication(services);
         ConfigureKeyVault(services, isDevelopmentEnv);
+        AddDatabase(services);
         ConfigureServices(services);
     }
 
@@ -108,5 +110,10 @@ public class Program
     private static void ConfigureServices(IServiceCollection services)
     {
         services.AddAuthSevices();
+    }
+
+    private static void AddDatabase(IServiceCollection services)
+    {
+        services.AddEFCore();
     }
 }

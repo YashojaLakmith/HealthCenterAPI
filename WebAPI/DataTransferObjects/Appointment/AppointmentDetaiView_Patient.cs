@@ -1,6 +1,6 @@
 ﻿namespace WebAPI.DataTransferObjects.Appointment;
 
-public record ApponimentDetaiView_Patient(
+public record AppointmentDetaiView_Patient(
     string AppointmentId,
     Common.Doctor Doctor,
     SessionInformation SessionInformation,

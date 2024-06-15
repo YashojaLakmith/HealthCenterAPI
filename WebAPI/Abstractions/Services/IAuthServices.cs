@@ -3,6 +3,6 @@
 namespace WebAPI.Abstractions.Services;
 public interface IAuthServices
 {
-    Task<string?> HandleLoginAsync(LoginInformation loginInformation);
+    Task<string?> HandlePatientLoginAsync(LoginInformation loginInformation);
     Task HandleLogoutAsync(string token);
 }

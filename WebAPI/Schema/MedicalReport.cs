@@ -9,6 +9,20 @@ public class MedicalReport
     public string Resource { get; set; }
     public DateTime IssuedOn { get; set; }
 
-    public DiagnosticRequest DiagnosticRequest { get; set; }
     public LabWorker Issuer { get; set; }
+
+    public override bool Equals(object? obj)
+    {
+        if(obj is MedicalReport m)
+        {
+            return GetHashCode() == m.GetHashCode() && ReportId.Equals(m.ReportId);
+        }
+
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return ReportId.GetHashCode();
+    }
 }

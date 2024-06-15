@@ -14,20 +14,20 @@ public class HttpContextUserInformation : IUserExtractor
         _accessor = contextAccessor;
     }
 
-    public Role? GetRole()
+    public Role GetRole()
     {
         var claims = GetClaims();
         var claim = claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Role));
 
-        return claim is null ? null : (Role)int.Parse(claim.Value);
+        return claim is null ? throw new InvalidOperationException() : (Role)int.Parse(claim.Value);
     }
 
-    public string? GetUserId()
+    public string GetUserId()
     {
         var claims = GetClaims();
         var claim = claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier));
 
-        return claim?.Value;
+        return claim is null ? throw new InvalidOperationException() : claim.Value;
     }
 
     private IEnumerable<Claim> GetClaims()
