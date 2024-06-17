@@ -1,6 +1,8 @@
-﻿namespace Infrastructure;
+﻿using Domain.Common;
+
+namespace Infrastructure;
 
 public interface IDbConnectionString
 {
-    Task<string> GetConnectionStringAsync(CancellationToken cancellationToken = default);
+    Task<Result<string>> GetConnectionStringAsync(CancellationToken cancellationToken = default);
 }

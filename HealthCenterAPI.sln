@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repositories", "src\Reposit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication", "src\Authentication\Authentication.csproj", "{24FF06F0-4DEA-4AE3-A92C-115E8EA84B12}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureKeyVaultSecrets", "src\AzureKeyVaultSecrets\AzureKeyVaultSecrets.csproj", "{C44C57E7-3080-4FEC-A417-E7D5B7087D2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,10 @@ Global
 		{24FF06F0-4DEA-4AE3-A92C-115E8EA84B12}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24FF06F0-4DEA-4AE3-A92C-115E8EA84B12}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24FF06F0-4DEA-4AE3-A92C-115E8EA84B12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C44C57E7-3080-4FEC-A417-E7D5B7087D2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C44C57E7-3080-4FEC-A417-E7D5B7087D2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C44C57E7-3080-4FEC-A417-E7D5B7087D2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C44C57E7-3080-4FEC-A417-E7D5B7087D2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,6 +85,7 @@ Global
 		{E1297275-5714-443C-83DA-E2DAD7F0584F} = {C27EB3B7-1168-4257-BA5C-1EF5A5B64B8A}
 		{568AE14F-89E3-400E-AA19-7675B2BD434E} = {C27EB3B7-1168-4257-BA5C-1EF5A5B64B8A}
 		{24FF06F0-4DEA-4AE3-A92C-115E8EA84B12} = {C27EB3B7-1168-4257-BA5C-1EF5A5B64B8A}
+		{C44C57E7-3080-4FEC-A417-E7D5B7087D2B} = {C27EB3B7-1168-4257-BA5C-1EF5A5B64B8A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CA5C4D54-8618-4BE1-A0BB-45923A2A2414}
