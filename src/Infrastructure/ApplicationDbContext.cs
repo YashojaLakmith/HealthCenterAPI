@@ -1,10 +1,13 @@
-﻿using Domain.Entities;
+﻿using Authentication.Entities;
+
+using Domain.Entities;
+using Domain.Repositories;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : DbContext, IUnitOfWork
 {
     private readonly string _connString;
 
@@ -16,9 +19,10 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Patient> Patients { get; set; }
     public DbSet<Doctor> Doctors { get; set; }
-    public DbSet<Patient> Appointments { get; set; }
+    public DbSet<Appointment> Appointments { get; set; }
     public DbSet<Session> Sessions { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<Credentials> Credentials { get; set; }
 
     private static string GetConnectionString(Task<string> connectionStringTask)
     {

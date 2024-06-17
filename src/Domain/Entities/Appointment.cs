@@ -24,14 +24,7 @@ public sealed class Appointment : Entity
 
     public static Result<Appointment> Create(Session session, Patient patient)
     {
-        if (patient.Appointments.Any(appointment => appointment.Session == session))
-        {
-            return Result<Appointment>.Failure(new Exception());
-        }
-
-        var idResult = Id.CreateId();
-        var appointment = new Appointment(idResult.Value, AppointmentStatus.Pending, session, patient);
-        return appointment;
+        return new Appointment(Id.CreateId().Value, AppointmentStatus.Pending, session, patient);
     }
 
     public void PatientArrived()

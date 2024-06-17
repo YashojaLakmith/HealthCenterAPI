@@ -31,4 +31,14 @@ public class Doctor : Entity
         RegistrationNumber = registrationNumber;
         Gender = gender;
     }
+
+    public Result CreateSession(SessionSpan sessionSpan, Ward ward)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Result DeleteSession(Session session)
+    {
+        throw new NotImplementedException();
+    }
 }

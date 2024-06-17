@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions.CQRS;
 using Application.Appointment.Commands;
+
 using Domain.Common;
 using Domain.Repositories;
 using Domain.ValueObjects;
@@ -7,48 +8,41 @@ using Domain.ValueObjects;
 namespace Application.Appointment.CommandHandlers;
 internal class CreateAppointmentCommandHandler : ICommandHandler<NewAppointmentCommand>
 {
-    private readonly IAppointmentRepository _appointmentRepository;
     private readonly IPatientRepository _patientRepository;
     private readonly ISessionRepository _sessionRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public CreateAppointmentCommandHandler(IAppointmentRepository appointmentRepository, IPatientRepository patientRepository, ISessionRepository sessionRepository)
+    public CreateAppointmentCommandHandler(IPatientRepository patientRepository, ISessionRepository sessionRepository, IUnitOfWork unitOfWork)
     {
-        _appointmentRepository = appointmentRepository;
         _patientRepository = patientRepository;
         _sessionRepository = sessionRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result> HandleAsync(NewAppointmentCommand command, CancellationToken cancellationToken = default)
     {
-        var patientIdResult = Id.CreateId(command.PatientId);
-        var sessionIdResult = Id.CreateId(command.SessionId);
+        var patientId = Id.CreateId(command.PatientId);
+        var sessionId = Id.CreateId(command.SessionId);
 
-        var patientResult = await _patientRepository.GetByIdAsync(patientIdResult.Value, cancellationToken);
-        if(!patientResult.IsSuccess)
+        var patientResult = await _patientRepository.GetByIdAsync(patientId.Value, cancellationToken);
+        if (!patientResult.IsSuccess)
         {
-            // Failure
+            return Result.Failure(new Exception());
         }
 
-        var sessionResult = await _sessionRepository.GetByIdAsync(sessionIdResult.Value, cancellationToken);
-        if(!sessionResult.IsSuccess)
+        var sessionResult = await _sessionRepository.GetByIdAsync(sessionId.Value, cancellationToken);
+        if (!sessionResult.IsSuccess)
         {
-            // Failure
+            return Result.Failure(new Exception());
         }
 
-        var registeredResult = await _appointmentRepository.HasAlredyRegisteredAsync(patientIdResult.Value, sessionIdResult.Value, cancellationToken);
-        if (registeredResult.IsSuccess && registeredResult.Value)
-        {
-            // Failure
-        }
-
-        var newAppointment = Domain.Entities.Appointment.Create(sessionResult.Value, patientResult.Value);
-        var result = await _appointmentRepository.InsertNewAsync(newAppointment.Value, cancellationToken);
-
-        if (result.IsSuccess)
+        var result = patientResult.Value.AddAppointment(sessionResult.Value);
+        if (!result.IsSuccess)
         {
             return result;
         }
 
-        return Result.Failure(new Exception());
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        return Result.Success();
     }
 }

@@ -1,4 +1,5 @@
-﻿using Domain.Enum;
+﻿using Domain.Common;
+using Domain.Enum;
 using Domain.Primitives;
 using Domain.ValueObjects;
 
@@ -16,6 +17,11 @@ public class Patient : Entity
     public Gender Gender { get; private set; }
 
     public IReadOnlyCollection<Appointment> Appointments => _appointments;
+
+    public static Result<Patient> CreatePatient(Name name, PhoneNumber phoneNumber, EmailAddress emailAddress, DateOfBirth dateOfBirth, Gender gender)
+    {
+        return new Patient(Id.CreateId().Value, name, phoneNumber, emailAddress, dateOfBirth, gender);
+    }
 
     private (int years, int months) CalculateAge()
     {
@@ -38,5 +44,35 @@ public class Patient : Entity
         EmailAddress = emailAddress;
         DateOfBirth = dateOfBirth;
         Gender = gender;
+    }
+
+    public Result AddAppointment(Session session)
+    {
+        if(_appointments.Any(appointment => appointment.Session == session))
+        {
+            // failed
+        }
+
+        var newAppointmentResult = Appointment.Create(session, this);
+        _appointments.Add(newAppointmentResult.Value);
+
+        return Result.Success();
+    }
+
+    public Result ChangePhoneNumber(PhoneNumber phoneNumber)
+    {
+        PhoneNumber = phoneNumber;
+        return Result.Success();
+    }
+
+    public Result ChangeEmail(EmailAddress emailAddress)
+    {
+        EmailAddress = emailAddress;
+        return Result.Success();
+    }
+
+    public Result RemoveAppointment(Appointment appointment)
+    {
+        throw new NotImplementedException();
     }
 }

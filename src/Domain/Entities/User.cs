@@ -1,4 +1,5 @@
-﻿using Domain.Enum;
+﻿using Domain.Common;
+using Domain.Enum;
 using Domain.Primitives;
 using Domain.ValueObjects;
 
@@ -30,14 +31,20 @@ public class User : Entity
         CreatedOn = createOn;
     }
 
-    public void ChangeEmailAddress(EmailAddress emailAddress)
+    public Result ChangeEmailAddress(EmailAddress emailAddress)
     {
         EmailAddress = emailAddress;
+        throw new NotImplementedException();
     }
 
-    public void ChangeRole(Role newRole)
+    public Result ChangePhoneNumber(PhoneNumber phoneNumber)
     {
-        Role = newRole;
+        throw new NotImplementedException();
+    }
+
+    public Result ChangeRole(Role newRole, User invoker)
+    {
+        throw new NotImplementedException();
     }
 
     private User() : base() { }
