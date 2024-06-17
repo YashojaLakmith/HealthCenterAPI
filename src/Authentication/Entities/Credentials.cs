@@ -21,17 +21,18 @@ public sealed class Credentials : Entity, IDisposable
     public IReadOnlyCollection<byte> PasswordHash => _passwordHash;
     public IReadOnlyCollection<byte> Salt => _salt;
 
-    public bool CanValidatePassword(Password password)
+    public Result AuthenticateUsingPassword(Password password)
     {
         var challengePassword = PasswordDerivation.DerivePassword(password.Value, _salt, HashBitLength, Iterations);
-        return challengePassword.SequenceEqual(_passwordHash);
+        return challengePassword.SequenceEqual(_passwordHash) ? Result.Success() : Result.Failure(new Exception());
     }
 
-    public void ChangePassword(Password newPassword)
+    public Result ChangePassword(Password newPassword)
     {
         _salt = RandomNumberGenerator.GetBytes(SaltBitLength / 8);
         _passwordHash = PasswordDerivation.DerivePassword(newPassword.Value, _salt, HashBitLength, Iterations);
-        UpdateTimeStamp();   
+        UpdateTimeStamp();
+        return Result.Success();
     }
 
     public static Result<Credentials> CreateCredentials(User user, IEnumerable<byte> passwordHash, IEnumerable<byte> salt, Guid timeStamp)
@@ -61,6 +62,6 @@ public sealed class Credentials : Entity, IDisposable
         User = user;
         _passwordHash = passwordHash.ToArray();
         _salt = salt.ToArray();
-        TimeStamp = timeStamp;
+        CurrentTimeStamp = timeStamp;
     }
 }

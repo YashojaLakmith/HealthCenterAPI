@@ -1,4 +1,4 @@
-﻿using Application.Abstractions.CQRS;
+﻿using Application.Authentication.Abstractions.CQRS;
 using Application.Authentication.Commands;
 
 using Domain.Common;
