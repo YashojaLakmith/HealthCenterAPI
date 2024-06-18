@@ -4,16 +4,16 @@ using Authentication.Repositories;
 using Domain.Common;
 using Domain.ValueObjects;
 
-using Infrastructure;
+using Infrastructure.Abstractions;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Repositories;
-internal sealed class AuthenticationServiceRepository : IAuthServiceRepository
+namespace Repositories.RepositoryImplementations;
+internal class AuthenticationServiceRepository : IAuthServiceRepository
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IApplicationDbContext _context;
 
-    public AuthenticationServiceRepository(ApplicationDbContext context)
+    public AuthenticationServiceRepository(IApplicationDbContext context)
     {
         _context = context;
     }
@@ -25,7 +25,7 @@ internal sealed class AuthenticationServiceRepository : IAuthServiceRepository
                                         .Where(credential => credential.User.EmailAddress == emailAddress)
                                         .FirstOrDefaultAsync(cancellationToken);
 
-        if(result is null)
+        if (result is null)
         {
             return Result<Credentials>.Failure(new Exception());
         }

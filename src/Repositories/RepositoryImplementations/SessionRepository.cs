@@ -4,19 +4,19 @@ using Domain.Query;
 using Domain.Repositories;
 using Domain.ValueObjects;
 
-using Infrastructure;
+using Infrastructure.Abstractions;
 
 using Microsoft.EntityFrameworkCore;
 
 using Repositories.CustomQueries;
 using Repositories.Evaluators;
 
-namespace Repositories;
+namespace Repositories.RepositoryImplementations;
 internal class SessionRepository : ISessionRepository
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly IApplicationDbContext _dbContext;
 
-    public SessionRepository(ApplicationDbContext dbContext)
+    public SessionRepository(IApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -44,7 +44,7 @@ internal class SessionRepository : ISessionRepository
                                     .Where(session => session.Id == sessionId)
                                     .FirstOrDefaultAsync(cancellationToken);
 
-        if(result is null)
+        if (result is null)
         {
             return Result<Session>.Failure(new Exception());
         }

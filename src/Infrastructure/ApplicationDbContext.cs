@@ -1,21 +1,18 @@
 ﻿using Authentication.Entities;
 
+using Domain.Common;
 using Domain.Entities;
 using Domain.Repositories;
+
+using Infrastructure.Abstractions;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure;
 
-public class ApplicationDbContext : DbContext, IUnitOfWork
+internal class ApplicationDbContext : DbContext, IUnitOfWork, IApplicationDbContext
 {
     private readonly string _connString;
-
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IDbConnectionString connectionString) : base(options)
-    {
-        var task = connectionString.GetConnectionStringAsync();
-        _connString = GetConnectionString(task);
-    }
 
     public DbSet<Patient> Patients { get; set; }
     public DbSet<Doctor> Doctors { get; set; }
@@ -24,10 +21,16 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     public DbSet<User> Users { get; set; }
     public DbSet<Credentials> Credentials { get; set; }
 
-    private static string GetConnectionString(Task<string> connectionStringTask)
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IDbConnectionString connectionString) : base(options)
     {
-        connectionStringTask.Wait();
-        return connectionStringTask.Result;
+        var task = connectionString.GetConnectionStringAsync();
+        _connString = GetConnectionString(task);
+    }
+
+    private static string GetConnectionString(Task<Result<string>> connectionStringTaskResult)
+    {
+        connectionStringTaskResult.Wait();
+        return connectionStringTaskResult.Result.Value;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

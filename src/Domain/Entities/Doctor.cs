@@ -7,11 +7,13 @@ namespace Domain.Entities;
 
 public class Doctor : Entity
 {
-    private readonly List<Session> _sessions = [];
+    private List<Session> _sessions = [];
 
     public Name DoctorName { get; private set; }
     public Description DoctorDescription { get; private set; }
     public DoctorRegistrationNumber RegistrationNumber { get; private set; }
+    public EmailAddress DoctorEmailAddress { get; private set; }
+    public PhoneNumber PhoneNumber { get; private set; }
     public Gender Gender { get; private set; }
 
     public IReadOnlyCollection<Session> Sessions => _sessions;

@@ -1,6 +1,6 @@
 ﻿using Domain.Common;
 
-namespace Infrastructure;
+namespace Infrastructure.Abstractions;
 
 public interface IDbConnectionString
 {

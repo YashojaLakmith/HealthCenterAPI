@@ -2,12 +2,11 @@
 using Azure.Security.KeyVault.Secrets;
 
 using Domain.Common;
-
-using Infrastructure;
+using Infrastructure.Abstractions;
 
 namespace AzureKeyVaultSecrets;
 
-public sealed class KeyVaultConnectionString : IDbConnectionString
+internal class KeyVaultConnectionString : IDbConnectionString
 {
     private const string KeyName = "Db_HealthCenterAPI";
     private const string VaultName = "HealthCenterAPI";

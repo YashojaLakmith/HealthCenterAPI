@@ -1,24 +1,22 @@
-﻿using System.Net.Mail;
-
-using Domain.Common;
+﻿using Domain.Common;
 using Domain.Entities;
 using Domain.Query;
 using Domain.Repositories;
 using Domain.ValueObjects;
 
-using Infrastructure;
+using Infrastructure.Abstractions;
 
 using Microsoft.EntityFrameworkCore;
 
 using Repositories.CustomQueries;
 using Repositories.Evaluators;
 
-namespace Repositories;
+namespace Repositories.RepositoryImplementations;
 internal class UserRepository : IUserRepository
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly IApplicationDbContext _dbContext;
 
-    public UserRepository(ApplicationDbContext dbContext)
+    public UserRepository(IApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -41,7 +39,7 @@ internal class UserRepository : IUserRepository
                                 .Where(user => user.EmailAddress == emailAddress)
                                 .FirstOrDefaultAsync(cancellationToken);
 
-        if(result is null)
+        if (result is null)
         {
             return Result<User>.Failure(new Exception());
         }
@@ -70,5 +68,10 @@ internal class UserRepository : IUserRepository
         }
 
         return result;
+    }
+
+    public Task<Result<bool>> IsEmailExistsAsync(EmailAddress registrationNumber, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
     }
 }

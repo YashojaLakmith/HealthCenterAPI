@@ -5,11 +5,6 @@ namespace Domain.Primitives;
 public abstract class Entity : IEquatable<Entity>
 {
     public Id Id { get; private init; }
-
-    public Guid? PreviousTimeStamp { get; private set; }
-
-    public Guid CurrentTimeStamp { get; private set; }
-
     protected Entity()
     {
         Id = Id.CreateId().Value;
@@ -18,17 +13,6 @@ public abstract class Entity : IEquatable<Entity>
     protected Entity(Id id)
     {
         Id = id;
-    }
-
-    protected void UpdateTimeStamp()
-    {
-        if(PreviousTimeStamp is not null)
-        {
-            return;
-        }
-
-        PreviousTimeStamp = CurrentTimeStamp;
-        CurrentTimeStamp = Guid.NewGuid();
     }
 
     public bool Equals(Entity? other)

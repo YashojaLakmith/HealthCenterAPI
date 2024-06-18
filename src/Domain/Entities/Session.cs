@@ -6,11 +6,11 @@ namespace Domain.Entities;
 
 public class Session : Entity
 {
-    private readonly List<Patient> _appointments = [];
+    private List<Appointment> _appointments = [];
 
     public SessionSpan SessionSpan { get; private set; }
     public Doctor Doctor { get; private set; }
-    public IReadOnlyCollection<Patient> Appointments => _appointments;
+    public IReadOnlyCollection<Appointment> Appointments => _appointments;
 
     public static Result<Session> Create(SessionSpan span, Doctor doctor)
     {

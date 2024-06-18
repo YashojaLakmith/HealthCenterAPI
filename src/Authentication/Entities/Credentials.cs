@@ -19,7 +19,7 @@ public sealed class Credentials : Entity, IDisposable
 
     public User User { get; private set; }
     public IReadOnlyCollection<byte> PasswordHash => _passwordHash;
-    public IReadOnlyCollection<byte> Salt => _salt;
+    public IReadOnlyCollection<byte> Salt => _salt;    
 
     public Result AuthenticateUsingPassword(Password password)
     {
@@ -31,13 +31,12 @@ public sealed class Credentials : Entity, IDisposable
     {
         _salt = RandomNumberGenerator.GetBytes(SaltBitLength / 8);
         _passwordHash = PasswordDerivation.DerivePassword(newPassword.Value, _salt, HashBitLength, Iterations);
-        UpdateTimeStamp();
         return Result.Success();
     }
 
-    public static Result<Credentials> CreateCredentials(User user, IEnumerable<byte> passwordHash, IEnumerable<byte> salt, Guid timeStamp)
+    public static Result<Credentials> CreateCredentials(User user, IEnumerable<byte> passwordHash, IEnumerable<byte> salt)
     {
-        return new Credentials(user, passwordHash, salt, timeStamp);
+        return new Credentials(user, passwordHash, salt);
     }
 
     public static Result<Credentials> CreateCredentials(User user)
@@ -48,7 +47,7 @@ public sealed class Credentials : Entity, IDisposable
         var hash = PasswordDerivation.DerivePassword(pwString, salt, HashBitLength, Iterations);
 
         Array.Clear(pw);
-        return new Credentials(user, hash, salt, Guid.NewGuid());
+        return new Credentials(user, hash, salt);
     }
 
     public void Dispose()
@@ -57,11 +56,10 @@ public sealed class Credentials : Entity, IDisposable
         Array.Clear(_salt);
     }
 
-    private Credentials(User user, IEnumerable<byte> passwordHash, IEnumerable<byte> salt, Guid timeStamp)
+    private Credentials(User user, IEnumerable<byte> passwordHash, IEnumerable<byte> salt)
     {
         User = user;
         _passwordHash = passwordHash.ToArray();
         _salt = salt.ToArray();
-        CurrentTimeStamp = timeStamp;
     }
 }

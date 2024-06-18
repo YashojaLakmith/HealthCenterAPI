@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Presentation;
-internal class AdminController
+namespace Presentation.Controllers;
+internal class DoctorController
 {
 }

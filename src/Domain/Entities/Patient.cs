@@ -7,7 +7,7 @@ namespace Domain.Entities;
 
 public class Patient : Entity
 {
-    private readonly List<Appointment> _appointments = [];
+    private List<Appointment> _appointments = [];
 
     public Name PatientName { get; private set; }
     public PhoneNumber PhoneNumber { get; private set; }

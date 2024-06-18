@@ -4,19 +4,19 @@ using Domain.Query;
 using Domain.Repositories;
 using Domain.ValueObjects;
 
-using Infrastructure;
+using Infrastructure.Abstractions;
 
 using Microsoft.EntityFrameworkCore;
 
 using Repositories.CustomQueries;
 using Repositories.Evaluators;
 
-namespace Repositories;
+namespace Repositories.RepositoryImplementations;
 internal class DoctorRepository : IDoctorRepository
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly IApplicationDbContext _dbContext;
 
-    public DoctorRepository(ApplicationDbContext dbContext)
+    public DoctorRepository(IApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -49,7 +49,7 @@ internal class DoctorRepository : IDoctorRepository
                                     .Where(doc => doc.Id == doctorId)
                                     .FirstOrDefaultAsync(cancellationToken);
 
-        if(result is null)
+        if (result is null)
         {
             return Result<Doctor>.Failure(new Exception());
         }
@@ -70,5 +70,15 @@ internal class DoctorRepository : IDoctorRepository
         }
 
         return result;
+    }
+
+    public Task<Result<bool>> IsEmailExistsAsync(EmailAddress registrationNumber, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Result<bool>> IsRegistrationNumberExistsAsync(DoctorRegistrationNumber registrationNumber, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -1,8 +1,9 @@
 ﻿using Application.Authentication.Abstractions.CQRS;
-using Application.Authentication.Abstractions.SessionManagement;
+using Application.Authentication.Abstractions.TokenManagement;
 using Application.Authentication.Commands;
 
 using Authentication.Repositories;
+using Authentication.ValueObjects;
 
 using Domain.Common;
 
@@ -20,6 +21,12 @@ internal class LogoutCommandHandler : ICommandHandler<LogoutCommand>
 
     public async Task<Result> HandleAsync(LogoutCommand command, CancellationToken cancellationToken = default)
     {
-        return await _sessionManager.RevokeSessionAsync(command.Token, cancellationToken);
+        var sessionTokenResult = SessionToken.CreateToken(command.Token);
+        if (!sessionTokenResult.IsSuccess)
+        {
+            return Result.Failure(new Exception());
+        }
+
+        return await _sessionManager.RevokeSessionAsync(sessionTokenResult.Value, cancellationToken);
     }
 }
