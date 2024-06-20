@@ -6,5 +6,5 @@ namespace Application.Abstractions.Factories.Appointment;
 public interface IAppointmentCommandHandlerFactory
 {
     public ICommandHandler<NewAppointmentCommand> CreateAppointmentCommandHandler { get; }
-    public ICommandHandler<IdCommandQuery> CancelAppointmentCommandHandler { get; }
+    public ICommandHandler<IdCommand> CancelAppointmentCommandHandler { get; }
 }

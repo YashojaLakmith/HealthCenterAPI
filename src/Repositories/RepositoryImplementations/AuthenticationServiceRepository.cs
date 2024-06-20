@@ -2,6 +2,7 @@
 using Authentication.Repositories;
 
 using Domain.Common;
+using Domain.Repositories;
 using Domain.ValueObjects;
 
 using Infrastructure.Abstractions;
@@ -27,7 +28,7 @@ internal class AuthenticationServiceRepository : IAuthServiceRepository
 
         if (result is null)
         {
-            return Result<Credentials>.Failure(new Exception());
+            return Result<Credentials>.Failure(RepositoryErrors.NotFoundError);
         }
 
         return result;
@@ -42,7 +43,7 @@ internal class AuthenticationServiceRepository : IAuthServiceRepository
 
         if (result is null)
         {
-            return Result<Credentials>.Failure(new Exception());
+            return Result<Credentials>.Failure(RepositoryErrors.NotFoundError);
         }
 
         return result;

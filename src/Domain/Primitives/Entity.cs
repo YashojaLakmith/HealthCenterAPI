@@ -5,10 +5,6 @@ namespace Domain.Primitives;
 public abstract class Entity : IEquatable<Entity>
 {
     public Id Id { get; private init; }
-    protected Entity()
-    {
-        Id = Id.CreateId().Value;
-    }
 
     protected Entity(Id id)
     {

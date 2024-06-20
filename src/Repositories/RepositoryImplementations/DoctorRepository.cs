@@ -46,12 +46,13 @@ internal class DoctorRepository : IDoctorRepository
     {
         var result = await _dbContext.Doctors
                                     .Include(doc => doc.Sessions)
+                                    .Include(doc => doc.Sessions)
                                     .Where(doc => doc.Id == doctorId)
                                     .FirstOrDefaultAsync(cancellationToken);
 
         if (result is null)
         {
-            return Result<Doctor>.Failure(new Exception());
+            return Result<Doctor>.Failure(RepositoryErrors.NotFoundError);
         }
 
         return result;
@@ -66,19 +67,23 @@ internal class DoctorRepository : IDoctorRepository
 
         if (result is null)
         {
-            return Result<Doctor>.Failure(new Exception());
+            return Result<Doctor>.Failure(RepositoryErrors.NotFoundError);
         }
 
         return result;
     }
 
-    public Task<Result<bool>> IsEmailExistsAsync(EmailAddress registrationNumber, CancellationToken cancellationToken = default)
+    public async Task<Result<bool>> IsEmailExistsAsync(EmailAddress emailAddress, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return await _dbContext.Doctors
+                                .AsNoTracking()
+                                .AnyAsync(doc => doc.DoctorEmailAddress == emailAddress, cancellationToken);
     }
 
-    public Task<Result<bool>> IsRegistrationNumberExistsAsync(DoctorRegistrationNumber registrationNumber, CancellationToken cancellationToken = default)
+    public async Task<Result<bool>> IsRegistrationNumberExistsAsync(DoctorRegistrationNumber registrationNumber, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return await _dbContext.Doctors
+                                .AsNoTracking()
+                                .AnyAsync(doc => doc.RegistrationNumber == registrationNumber, cancellationToken);
     }
 }

@@ -45,7 +45,7 @@ internal class PatientRepository : IPatientRepository
 
         if (result is null)
         {
-            return Result<Patient>.Failure(new Exception());
+            return Result<Patient>.Failure(RepositoryErrors.NotFoundError);
         }
 
         return result;
@@ -57,13 +57,10 @@ internal class PatientRepository : IPatientRepository
         return Result.Success();
     }
 
-    public Task<Result<bool>> IsEmailExistsAsync(EmailAddress registrationNumber, CancellationToken cancellationToken = default)
+    public async Task<Result<bool>> IsEmailExistsAsync(EmailAddress emailAddress, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task<Result<bool>> IsNICExistsAsync(NIC nic, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
+        return await _dbContext.Patients
+                                .AsNoTracking()
+                                .AnyAsync(p => p.EmailAddress == emailAddress, cancellationToken);
     }
 }

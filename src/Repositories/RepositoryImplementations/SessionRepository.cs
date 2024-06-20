@@ -46,7 +46,7 @@ internal class SessionRepository : ISessionRepository
 
         if (result is null)
         {
-            return Result<Session>.Failure(new Exception());
+            return Result<Session>.Failure(RepositoryErrors.NotFoundError);
         }
 
         return result;

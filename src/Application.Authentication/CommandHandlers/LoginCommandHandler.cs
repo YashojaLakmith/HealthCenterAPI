@@ -6,6 +6,7 @@ using Application.Authentication.Commands;
 
 using Authentication.Entities;
 using Authentication.Repositories;
+using Authentication.Services;
 using Authentication.ValueObjects;
 
 using Domain.Common;
@@ -16,11 +17,13 @@ internal class LoginCommandHandler : ICommandHandler<SessionToken, LoginCommand>
 {
     private readonly IAuthServiceRepository _authRepository;
     private readonly ISessionManagement _sessionManager;
+    private readonly PasswordAuthenticationService _authenticationService;
 
-    public LoginCommandHandler(IAuthServiceRepository authRepository, ISessionManagement sessionManager)
+    public LoginCommandHandler(IAuthServiceRepository authRepository, ISessionManagement sessionManager, PasswordAuthenticationService authenticationService)
     {
         _authRepository = authRepository;
         _sessionManager = sessionManager;
+        _authenticationService = authenticationService;
     }
 
     public async Task<Result<SessionToken>> HandleAsync(LoginCommand command, CancellationToken cancellationToken = default)
@@ -29,10 +32,11 @@ internal class LoginCommandHandler : ICommandHandler<SessionToken, LoginCommand>
         var pwResult = Password.CreatePassword(command.Password);
         var credentialResult = await _authRepository.GetCredentialObjectByEmailAsync(emailResult.Value, cancellationToken);
 
-        var authenticateResult = credentialResult.Value.AuthenticateUsingPassword(pwResult.Value);
-        if (!authenticateResult.IsSuccess)
+        var authenticateResult = _authenticationService.AuthenticateWithPassword(credentialResult.Value, pwResult.Value);
+
+        if (authenticateResult.IsFailure)
         {
-            return Result<SessionToken>.Failure(authenticateResult.Exception);
+            return Result<SessionToken>.Failure(authenticateResult.Error);
         }
 
         var claims = GetUserClaims(credentialResult.Value);

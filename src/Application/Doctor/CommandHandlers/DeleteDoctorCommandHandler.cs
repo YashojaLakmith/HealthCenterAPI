@@ -2,12 +2,35 @@
 using Application.Common;
 
 using Domain.Common;
+using Domain.Common.Errors;
+using Domain.Repositories;
+using Domain.ValueObjects;
 
 namespace Application.Doctor.CommandHandlers;
-internal class DeleteDoctorCommandHandler : ICommandHandler<IdCommandQuery>
+internal class DeleteDoctorCommandHandler : ICommandHandler<IdCommand>
 {
-    public Task<Result> HandleAsync(IdCommandQuery command, CancellationToken cancellationToken = default)
+    private readonly IDoctorRepository _doctorRepository;
+    private readonly IUnitOfWork _unitOfWork;
+
+    public DeleteDoctorCommandHandler(IDoctorRepository doctorRepository, IUnitOfWork unitOfWork)
     {
-        throw new NotImplementedException();
+        _doctorRepository = doctorRepository;
+        _unitOfWork = unitOfWork;
+    }
+
+    public async Task<Result> HandleAsync(IdCommand command, CancellationToken cancellationToken = default)
+    {
+        var idResult = Id.CreateId(command.Id);
+        var existsResult = await _doctorRepository.GetByIdAsync(idResult.Value, cancellationToken);
+
+        if (existsResult.IsFailure)
+        {
+            return Result.Failure(DoctorErrors.NotFound);
+        }
+
+        await _doctorRepository.DeleteAsync(existsResult.Value, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return Result.Success();
     }
 }

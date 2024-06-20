@@ -9,6 +9,6 @@ public class AppointmentQueryHandlersFactoryImpl : IAppointmentQueryHandlerFacto
 {
     public IQueryHandler<IReadOnlyCollection<AppointmentListItemView>, AppointmentFilterQuery> ViewAppointmentListQueryHandler
         => throw new NotImplementedException();
-    public IQueryHandler<AppointmentDetailView, IdCommandQuery> ViewAppointmentDetailViewQueryHandler
+    public IQueryHandler<AppointmentDetailView, IdQuery> ViewAppointmentDetailViewQueryHandler
         => throw new NotImplementedException();
 }

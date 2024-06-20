@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations;
-internal class UserModelConfiguration : IEntityTypeConfiguration<User>
+internal class UserModelConfiguration : IEntityTypeConfiguration<Admin>
 {
-    public void Configure(EntityTypeBuilder<User> builder)
+    public void Configure(EntityTypeBuilder<Admin> builder)
     {
         builder.Property(user => user.CreatedOn)
             .IsRequired(true);

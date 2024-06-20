@@ -21,19 +21,19 @@ internal class UserRepository : IUserRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Result> CreateNewAsync(User newUser, CancellationToken cancellationToken = default)
+    public async Task<Result> CreateNewAsync(Admin newUser, CancellationToken cancellationToken = default)
     {
         await _dbContext.Users.AddAsync(newUser, cancellationToken);
         return Result.Success();
     }
 
-    public Task<Result> DeleteAsync(User user, CancellationToken cancellationToken = default)
+    public Task<Result> DeleteAsync(Admin user, CancellationToken cancellationToken = default)
     {
         _dbContext.Users.Remove(user);
         return Task.FromResult(Result.Success());
     }
 
-    public async Task<Result<User>> GetByEmailAsync(EmailAddress emailAddress, CancellationToken cancellationToken = default)
+    public async Task<Result<Admin>> GetByEmailAsync(EmailAddress emailAddress, CancellationToken cancellationToken = default)
     {
         var result = await _dbContext.Users
                                 .Where(user => user.EmailAddress == emailAddress)
@@ -41,13 +41,13 @@ internal class UserRepository : IUserRepository
 
         if (result is null)
         {
-            return Result<User>.Failure(new Exception());
+            return Result<Admin>.Failure(RepositoryErrors.NotFoundError);
         }
 
         return result;
     }
 
-    public async Task<Result<List<User>>> GetByFilteredQueryAsync(CustomQuery<User> customQuery, Pagination pagination, CancellationToken cancellationToken = default)
+    public async Task<Result<List<Admin>>> GetByFilteredQueryAsync(CustomQuery<Admin> customQuery, Pagination pagination, CancellationToken cancellationToken = default)
     {
         return await _dbContext.Users
                                 .AsNoTracking()
@@ -56,7 +56,7 @@ internal class UserRepository : IUserRepository
                                 .ToListAsync(cancellationToken);
     }
 
-    public async Task<Result<User>> GetByIdAsync(Id userId, CancellationToken cancellationToken = default)
+    public async Task<Result<Admin>> GetByIdAsync(Id userId, CancellationToken cancellationToken = default)
     {
         var result = await _dbContext.Users
                                 .Where(user => user.Id == userId)
@@ -64,14 +64,16 @@ internal class UserRepository : IUserRepository
 
         if (result is null)
         {
-            return Result<User>.Failure(new Exception());
+            return Result<Admin>.Failure(RepositoryErrors.NotFoundError);
         }
 
         return result;
     }
 
-    public Task<Result<bool>> IsEmailExistsAsync(EmailAddress registrationNumber, CancellationToken cancellationToken = default)
+    public async Task<Result<bool>> IsEmailExistsAsync(EmailAddress emailAddress, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return await _dbContext.Users
+                                .AsNoTracking()
+                                .AnyAsync(user => user.EmailAddress == emailAddress, cancellationToken);
     }
 }

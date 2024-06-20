@@ -38,18 +38,18 @@ internal class AppointmentRepository : IAppointmentRepository
 
     public async Task<Result<Appointment>> GetByIdAsync(Id appointmentId, CancellationToken cancellationToken = default)
     {
-        var result = await _dbContext.Appointments
+        var resultSet = await _dbContext.Appointments
                                         .Include(appointment => appointment.Patient)
                                         .Include(appointment => appointment.Session)
                                         .Where(appointment => appointment.Id == appointmentId)
                                         .FirstOrDefaultAsync(cancellationToken);
 
-        if (result is null)
+        if (resultSet is null)
         {
-            return Result<Appointment>.Failure(new Exception());
+            return Result<Appointment>.Failure(RepositoryErrors.NotFoundError);
         }
 
-        return result;
+        return resultSet;
     }
 
     public async Task<Result> InsertNewAsync(Appointment appointment, CancellationToken cancellationToken = default)

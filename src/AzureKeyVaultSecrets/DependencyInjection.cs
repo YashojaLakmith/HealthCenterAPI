@@ -7,6 +7,6 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddAzureKeyVault(this IServiceCollection services)
     {
-        return services.AddSingleton<IDbConnectionString, KeyVaultConnectionString>();
+        return services.AddSingleton<IDbConnectionStringSource, KeyVaultConnectionString>();
     }
 }

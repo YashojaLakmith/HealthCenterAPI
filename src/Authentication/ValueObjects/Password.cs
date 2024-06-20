@@ -1,26 +1,29 @@
-﻿using Domain.Common;
+﻿using Authentication.Errors;
+
+using Domain.Common;
 using Domain.Primitives;
 
 namespace Authentication.ValueObjects;
 public sealed class Password : ValueObject
 {
-    private const int MaxPasswordLength = 32;
-    private const int MinPasswordLength = 8;
+    internal const int MaxPasswordLength = 32;
+    internal const int MinPasswordLength = 8;
     public string Value { get; }
 
     public static Result<Password> CreatePassword(string plainText)
     {
-        if (!ValidatePassword(plainText))
+        var pwValidationResult = ValidatePassword(plainText);
+        if (pwValidationResult.IsFailure)
         {
-            return Result<Password>.Failure(new ArgumentException());
+            return Result<Password>.Failure(pwValidationResult.Error);
         }
 
         return new Password(plainText);
     }
 
-    private static bool ValidatePassword(string password)
+    private static Result ValidatePassword(string password)
     {
-        return false;
+        return Result.Failure(PasswordValidationErrors.InvalidPasswordCharacterError);
     }
 
     private Password(string plainText)

@@ -12,8 +12,6 @@ public interface IPatientRepository
 
     Task<Result<bool>> IsEmailExistsAsync(EmailAddress registrationNumber, CancellationToken cancellationToken = default);
 
-    Task<Result<bool>> IsNICExistsAsync(NIC nic, CancellationToken cancellationToken = default);
-
     Task<Result> InsertNewAsync(Patient newPatient, CancellationToken cancellationToken = default);
 
     Task<Result> DeleteAsync(Patient patient, CancellationToken cancellationToken = default);

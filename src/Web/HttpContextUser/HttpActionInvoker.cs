@@ -17,7 +17,7 @@ public sealed class HttpActionInvoker : ICommandQueryInvoker
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public Task<Result<InvokingUser>> GetInvokingUser(CancellationToken cancellationToken = default)
+    public Task<Result<InvokingUser>> GetInvokingUserAsync(CancellationToken cancellationToken = default)
     {
         Result<InvokingUser> result;
         if(_httpContextAccessor.HttpContext is null)

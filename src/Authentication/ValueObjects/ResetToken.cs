@@ -1,4 +1,6 @@
-﻿using Domain.Common;
+﻿using System.Security.Cryptography;
+
+using Domain.Common;
 using Domain.Primitives;
 
 namespace Authentication.ValueObjects;
@@ -10,6 +12,12 @@ public class ResetToken : ValueObject
     public static Result<ResetToken> CreateToken(string tokenString)
     {
         return new ResetToken(tokenString);
+    }
+
+    public static ResetToken CreateToken()
+    {
+        var rand =  RandomNumberGenerator.GetHexString(ResetTokenBitLength / 8 * 2);
+        return new ResetToken(rand);
     }
 
     private ResetToken(string value)

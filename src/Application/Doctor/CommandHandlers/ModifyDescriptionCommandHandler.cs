@@ -2,12 +2,43 @@
 using Application.Doctor.Commands;
 
 using Domain.Common;
+using Domain.Repositories;
+using Domain.ValueObjects;
 
 namespace Application.Doctor.CommandHandlers;
 internal class ModifyDescriptionCommandHandler : ICommandHandler<ModifyDescriptionCommand>
 {
-    public Task<Result> HandleAsync(ModifyDescriptionCommand command, CancellationToken cancellationToken = default)
+    private readonly IDoctorRepository _doctorRepository;
+    private readonly IUnitOfWork _unitOfWork;
+
+    public ModifyDescriptionCommandHandler(IUnitOfWork unitOfWork, IDoctorRepository doctorRepository)
     {
-        throw new NotImplementedException();
+        _unitOfWork = unitOfWork;
+        _doctorRepository = doctorRepository;
+    }
+
+    public async Task<Result> HandleAsync(ModifyDescriptionCommand command, CancellationToken cancellationToken = default)
+    {
+        var doctorIdResult = Id.CreateId(command.DoctorId);
+        if (doctorIdResult.IsFailure)
+        {
+            return doctorIdResult;
+        }
+
+        var descriptionResult = Description.CreateDescription(command.NewDescription);
+        if (descriptionResult.IsFailure)
+        {
+            return descriptionResult;
+        }
+
+        var doctorResult = await _doctorRepository.GetByIdAsync(doctorIdResult.Value, cancellationToken);
+        if (doctorResult.IsFailure)
+        {
+            return doctorResult;
+        }
+
+        doctorResult.Value.ChangeDescription(descriptionResult.Value);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        return Result.Success();
     }
 }

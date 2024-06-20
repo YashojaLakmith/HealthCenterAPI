@@ -24,7 +24,7 @@ internal class LogoutCommandHandler : ICommandHandler<LogoutCommand>
         var sessionTokenResult = SessionToken.CreateToken(command.Token);
         if (!sessionTokenResult.IsSuccess)
         {
-            return Result.Failure(new Exception());
+            return sessionTokenResult;
         }
 
         return await _sessionManager.RevokeSessionAsync(sessionTokenResult.Value, cancellationToken);

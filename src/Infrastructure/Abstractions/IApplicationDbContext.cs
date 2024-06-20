@@ -9,6 +9,6 @@ public interface IApplicationDbContext
     public DbSet<Doctor> Doctors { get; set; }
     public DbSet<Appointment> Appointments { get; set; }
     public DbSet<Session> Sessions { get; set; }
-    public DbSet<User> Users { get; set; }
+    public DbSet<Admin> Users { get; set; }
     public DbSet<Credentials> Credentials { get; set; }
 }

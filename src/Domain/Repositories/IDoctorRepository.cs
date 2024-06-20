@@ -8,6 +8,8 @@ public interface IDoctorRepository
 {
     Task<Result<List<Doctor>>> GetByFilteredQueryAsync(CustomQuery<Doctor> customQuery, Pagination pagination, CancellationToken cancellationToken = default);
 
+    Task<Result<bool>> IsDoctorExistsAsync(Id doctorId, CancellationToken cancellationToken = default);
+
     Task<Result<Doctor>> GetByIdAsync(Id doctorId, CancellationToken cancellationToken = default);
 
     Task<Result<Doctor>> GetByRegistrationNumberAsync(DoctorRegistrationNumber registrationNumber, CancellationToken cancellationToken = default);

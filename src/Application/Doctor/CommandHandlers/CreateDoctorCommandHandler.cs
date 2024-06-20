@@ -2,7 +2,7 @@
 using Application.Doctor.Commands;
 
 using Domain.Common;
-using Domain.Entities;
+using Domain.Common.Errors;
 using Domain.Repositories;
 using Domain.ValueObjects;
 
@@ -21,31 +21,31 @@ internal class CreateDoctorCommandHandler : ICommandHandler<CreateDoctorCommand>
     public async Task<Result> HandleAsync(CreateDoctorCommand command, CancellationToken cancellationToken = default)
     {
         var nameResult = Name.Create(command.DoctorName);
-        if (!nameResult.IsSuccess)
+        if (nameResult.IsFailure)
         {
             return nameResult;
         }
 
         var emailResult = EmailAddress.CreateEmailAddress(command.EmailAddress);
-        if (!emailResult.IsSuccess)
+        if (emailResult.IsFailure)
         {
             return emailResult;
         }
 
         var phoneNumberResult = PhoneNumber.CreatePhoneNumber(command.PhoneNumber);
-        if (!phoneNumberResult.IsSuccess)
+        if (phoneNumberResult.IsFailure)
         {
             return phoneNumberResult;
         }
 
         var regNumberResult = DoctorRegistrationNumber.Create(command.RegistrationNumber);
-        if (!regNumberResult.IsSuccess)
+        if (regNumberResult.IsFailure)
         {
             return regNumberResult;
         }
 
         var descriptionResult = Description.CreateDescription(command.Description);
-        if (!descriptionResult.IsSuccess)
+        if (descriptionResult.IsFailure)
         {
             return descriptionResult;
         }
@@ -53,13 +53,13 @@ internal class CreateDoctorCommandHandler : ICommandHandler<CreateDoctorCommand>
         var emailExistence = await _doctorRepository.IsEmailExistsAsync(emailResult.Value, cancellationToken);
         if (emailExistence.Value)
         {
-            // Email already exists
+            return Result.Failure(EmailErrors.EmailAlreadyExists);
         }
 
         var registrationNumberExistence = await _doctorRepository.IsRegistrationNumberExistsAsync(regNumberResult.Value, cancellationToken);
         if (registrationNumberExistence.Value)
         {
-            // Reg no already exists.
+            return Result.Failure(RegistrationNumberErrors.RegistrationNumberAlreadyExists);
         }
 
         var newDoctorResult = Domain.Entities.Doctor.Create(nameResult.Value, descriptionResult.Value, regNumberResult.Value, command.Gender);

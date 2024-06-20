@@ -8,5 +8,5 @@ public interface IAppointmentQueryHandlerFactory
 {
     IQueryHandler<IReadOnlyCollection<AppointmentListItemView>, AppointmentFilterQuery> ViewAppointmentListQueryHandler { get; }
 
-    IQueryHandler<AppointmentDetailView, IdCommandQuery> ViewAppointmentDetailViewQueryHandler { get; }
+    IQueryHandler<AppointmentDetailView, IdQuery> ViewAppointmentDetailViewQueryHandler { get; }
 }

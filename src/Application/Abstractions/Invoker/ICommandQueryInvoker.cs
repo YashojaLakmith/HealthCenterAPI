@@ -5,5 +5,5 @@ using Domain.Common;
 namespace Application.Abstractions.Invoker;
 public interface ICommandQueryInvoker
 {
-    Task<Result<InvokingUser>> GetInvokingUser(CancellationToken cancellationToken = default);
+    Task<Result<InvokingUser>> GetInvokingUserAsync(CancellationToken cancellationToken = default);
 }
