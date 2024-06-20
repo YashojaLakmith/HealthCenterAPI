@@ -1,4 +1,6 @@
-﻿using Domain.Common;
+﻿using Authentication.ValueObjects;
+
+using Domain.Common;
 using Domain.Entities;
 using Domain.Primitives;
 using Domain.ValueObjects;
@@ -22,5 +24,18 @@ public sealed class Credentials : Entity
         Salt = salt;
     }
 
+    public Result ChangePasswordAfterAuthenticating(Password currentPassword, Password newPassword)
+    {
+        throw new NotImplementedException();
+    }
 
+    public bool CanAuthenticateWithPassword(Password password)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Result ChangePassword(Password newPassword)
+    {
+        throw new NotImplementedException();
+    }
 }

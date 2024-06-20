@@ -27,8 +27,7 @@ public class Doctor : Entity
         PhoneNumber phoneNumber,
         Gender gender)
     {
-        var idResult = Id.CreateId();
-        return new Doctor(idResult.Value, name, description, registrationNumber, doctorEmailAddress, phoneNumber, gender);
+        return new Doctor(Id.CreateId(), name, description, registrationNumber, doctorEmailAddress, phoneNumber, gender);
     }
 
     private Doctor(

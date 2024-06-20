@@ -23,27 +23,36 @@ internal class ChangePasswordCommandHandler : ICommandHandler<ChangePasswordComm
     public async Task<Result> HandleAsync(ChangePasswordCommand command, CancellationToken cancellationToken = default)
     {
         var currentPwResult = Password.CreatePassword(command.CurrentPassword);
+        if (currentPwResult.IsFailure)
+        {
+            return currentPwResult;
+        }
+
         var newPwResult = Password.CreatePassword(command.NewPassword);
-        var idResult = Id.CreateId(command.UserId);
-
-        // If current or new password invalid...
-
-        var credentialResult = await _authRepository.GetCredentialObjectByIdAsync(idResult.Value, cancellationToken);
-
-        // If not exists
-
-        var authenticateResult = credentialResult.Value.AuthenticateUsingPassword(currentPwResult.Value);
-        if (!authenticateResult.IsSuccess)
+        if (newPwResult.IsFailure)
         {
-            return authenticateResult;
+            return newPwResult;
         }
 
-        var changeResult = credentialResult.Value.ChangePassword(newPwResult.Value);
-        if (changeResult.IsSuccess)
+        var emailResult = EmailAddress.CreateEmailAddress(command.EmailAddress);
+        if (emailResult.IsFailure)
         {
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return emailResult;
         }
 
-        return changeResult;
+        var credentialResult = await _authRepository.GetCredentialObjectByEmailAsync(emailResult.Value, cancellationToken);
+        if (credentialResult.IsFailure)
+        {
+            return credentialResult;
+        }
+
+        var changeResult = credentialResult.Value.ChangePasswordAfterAuthenticating(currentPwResult.Value, newPwResult.Value);
+        if(changeResult.IsFailure)
+        {
+            return changeResult;
+        }
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        return Result.Success();
     }
 }

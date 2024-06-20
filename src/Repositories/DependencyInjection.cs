@@ -16,6 +16,6 @@ public static class DependencyInjection
                         .AddScoped<IDoctorRepository, DoctorRepository>()
                         .AddScoped<IPatientRepository, PatientRepository>()
                         .AddScoped<ISessionRepository, SessionRepository>()
-                        .AddScoped<IUserRepository, UserRepository>();
+                        .AddScoped<IAdminRepository, UserRepository>();
     }
 }

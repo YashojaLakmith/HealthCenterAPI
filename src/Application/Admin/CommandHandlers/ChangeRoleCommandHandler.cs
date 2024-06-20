@@ -10,12 +10,12 @@ using Domain.ValueObjects;
 namespace Application.Admin.CommandHandlers;
 internal class ChangeRoleCommandHandler : ICommandHandler<ChangeRoleCommand>
 {
-    private readonly IUserRepository _adminRepository;
+    private readonly IAdminRepository _adminRepository;
     private readonly IChangeAdminRoleService _changeRoleService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICommandQueryInvoker _invoker;
 
-    public ChangeRoleCommandHandler(IUnitOfWork unitOfWork, IChangeAdminRoleService changeRoleService, IUserRepository adminRepository, ICommandQueryInvoker invoker)
+    public ChangeRoleCommandHandler(IUnitOfWork unitOfWork, IChangeAdminRoleService changeRoleService, IAdminRepository adminRepository, ICommandQueryInvoker invoker)
     {
         _unitOfWork = unitOfWork;
         _changeRoleService = changeRoleService;

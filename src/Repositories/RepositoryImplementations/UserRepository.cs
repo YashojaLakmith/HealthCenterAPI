@@ -12,7 +12,7 @@ using Repositories.CustomQueries;
 using Repositories.Evaluators;
 
 namespace Repositories.RepositoryImplementations;
-internal class UserRepository : IUserRepository
+internal class UserRepository : IAdminRepository
 {
     private readonly IApplicationDbContext _dbContext;
 

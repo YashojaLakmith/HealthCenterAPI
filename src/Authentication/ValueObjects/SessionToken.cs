@@ -14,7 +14,7 @@ public class SessionToken : ValueObject
         return new SessionToken(value);
     }
 
-    public static Result<SessionToken> CreateToken()
+    public static SessionToken CreateToken()
     {
         var token = RandomNumberGenerator.GetHexString(TokenByteLength * 2);
         return new SessionToken(token);

@@ -14,12 +14,12 @@ public sealed class EmailAddress : ValueObject
     {
         if(string.IsNullOrWhiteSpace(address) || address == string.Empty)
         {
-            return Result<EmailAddress>.Failure(EmailErrors.EmptyEmailAddress);
+            return Result<EmailAddress>.Failure(ChangeEmailErrors.EmptyEmailAddress);
         }
 
         if (!ValidateEmailAddress(address))
         {
-            return Result<EmailAddress>.Failure(EmailErrors.InvalidEmailAddress);
+            return Result<EmailAddress>.Failure(ChangeEmailErrors.InvalidEmailAddress);
         }
 
         return new EmailAddress(address);

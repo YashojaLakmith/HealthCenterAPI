@@ -25,7 +25,7 @@ internal class DeleteDoctorCommandHandler : ICommandHandler<IdCommand>
 
         if (existsResult.IsFailure)
         {
-            return Result.Failure(DoctorErrors.NotFound);
+            return existsResult;
         }
 
         await _doctorRepository.DeleteAsync(existsResult.Value, cancellationToken);

@@ -1,19 +1,40 @@
-﻿using Domain.Common;
+﻿using Domain.Abstractions.DomainServices;
+using Domain.Common;
+using Domain.Enum;
+using Domain.ValueObjects;
 
 namespace Domain.Services;
-public class CreateUserService
+public class CreateUserService : ICreateUserService
 {
-    Task<Result> CreatePatientAsync(CancellationToken cancellationToken = default)
+    public Task<Result> CreatePatientAsync(Name PatientName,
+        DateOfBirth BirthDate,
+        Gender Gender,
+        NIC NIC,
+        PhoneNumber PhoneNumber,
+        EmailAddress EmailAddress,
+        CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
-    Task<Result> CreateDoctorAsync(CancellationToken cancellationToken = default)
+    public Task<Result> CreateDoctorAsync(
+        Name DoctorName,
+        Description Description,
+        Gender Gender,
+        DoctorRegistrationNumber RegistrationNumber,
+        EmailAddress EmailAddress,
+        PhoneNumber PhoneNumber, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
-    Task<Result> CreateAdminAsync(CancellationToken cancellationToken = default)
+    public Task<Result> CreateAdminAsync(
+        Name UserName,
+        Role Role,
+        NIC NIC,
+        Gender Gender,
+        EmailAddress EmailAddress,
+        PhoneNumber PhoneNumber, Id invokerId, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }

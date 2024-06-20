@@ -1,8 +1,7 @@
 ﻿using Application.Authentication.Abstractions.CQRS;
-using Application.Authentication.Abstractions.TokenManagement;
 using Application.Authentication.Commands;
 
-using Authentication.Repositories;
+using Authentication.Abstractions.Services;
 using Authentication.ValueObjects;
 
 using Domain.Common;
@@ -10,25 +9,27 @@ using Domain.Common;
 namespace Application.Authentication.CommandHandlers;
 internal class ResetPasswordCommandHandler : ICommandHandler<ResetPasswordCommand>
 {
-    private readonly IAuthServiceRepository _authRepository;
-    private readonly IResetTokenManagement _resetTokenManager;
+    private readonly ITokenBasedPasswordResetService _resetService;
 
-    public ResetPasswordCommandHandler(IAuthServiceRepository authRepository, IResetTokenManagement resetTokenManager)
+    public ResetPasswordCommandHandler(ITokenBasedPasswordResetService resetService)
     {
-        _authRepository = authRepository;
-        _resetTokenManager = resetTokenManager;
+        _resetService = resetService;
     }
 
     public async Task<Result> HandleAsync(ResetPasswordCommand command, CancellationToken cancellationToken = default)
     {
-        var resetTokenResult = ResetToken.CreateToken(command.ResetToken);
-        var claimsResult = await _resetTokenManager.VerifyResetTokenAsync(resetTokenResult.Value, cancellationToken);
-        if (!claimsResult.IsSuccess)
+        var tokenResult = ResetToken.CreateToken(command.ResetToken);
+        if (tokenResult.IsFailure)
         {
-            return claimsResult;
+            return tokenResult;
         }
 
+        var pwResult = Password.CreatePassword(command.NewPassword);
+        if (pwResult.IsFailure)
+        {
+            return pwResult;
+        }
 
-        throw new NotImplementedException();
+        return await _resetService.ChangePasswordAsync(tokenResult.Value, pwResult.Value, cancellationToken);
     }
 }

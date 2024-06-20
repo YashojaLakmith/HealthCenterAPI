@@ -13,6 +13,6 @@ public class DefaultCredentialService
         var salt = PasswordDerivation.DeriveNewSalt();
         var pwHash = PasswordDerivation.DerivePassword(str, salt);
 
-        return Credentials.CreateCredentials(Id.CreateId().Value, admin, pwHash, salt);
+        return Credentials.CreateCredentials(Id.CreateId(), admin, pwHash, salt);
     }
 }

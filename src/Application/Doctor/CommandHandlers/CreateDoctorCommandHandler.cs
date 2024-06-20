@@ -1,20 +1,20 @@
 ﻿using Application.Abstractions.CQRS;
 using Application.Doctor.Commands;
 
+using Domain.Abstractions.DomainServices;
 using Domain.Common;
-using Domain.Common.Errors;
 using Domain.Repositories;
 using Domain.ValueObjects;
 
 namespace Application.Doctor.CommandHandlers;
 internal class CreateDoctorCommandHandler : ICommandHandler<CreateDoctorCommand>
 {
-    private readonly IDoctorRepository _doctorRepository;
+    private readonly ICreateUserService _createUserService;
     private readonly IUnitOfWork _unitOfWork;
 
-    public CreateDoctorCommandHandler(IDoctorRepository doctorRepository, IUnitOfWork unitOfWork)
+    public CreateDoctorCommandHandler(ICreateUserService createUserService, IUnitOfWork unitOfWork)
     {
-        _doctorRepository = doctorRepository;
+        _createUserService = createUserService;
         _unitOfWork = unitOfWork;
     }
 
@@ -50,21 +50,21 @@ internal class CreateDoctorCommandHandler : ICommandHandler<CreateDoctorCommand>
             return descriptionResult;
         }
 
-        var emailExistence = await _doctorRepository.IsEmailExistsAsync(emailResult.Value, cancellationToken);
-        if (emailExistence.Value)
+        var result = await _createUserService.CreateDoctorAsync(
+            nameResult.Value,
+            descriptionResult.Value,
+            command.Gender,
+            regNumberResult.Value,
+            emailResult.Value,
+            phoneNumberResult.Value,
+            cancellationToken
+            );
+
+        if (result.IsFailure)
         {
-            return Result.Failure(EmailErrors.EmailAlreadyExists);
+            return result;
         }
 
-        var registrationNumberExistence = await _doctorRepository.IsRegistrationNumberExistsAsync(regNumberResult.Value, cancellationToken);
-        if (registrationNumberExistence.Value)
-        {
-            return Result.Failure(RegistrationNumberErrors.RegistrationNumberAlreadyExists);
-        }
-
-        var newDoctorResult = Domain.Entities.Doctor.Create(nameResult.Value, descriptionResult.Value, regNumberResult.Value, command.Gender);
-
-        await _doctorRepository.CreateNewAsync(newDoctorResult.Value, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
