@@ -33,7 +33,7 @@ public class Patient : Entity
 
     public static Result<Patient> CreatePatient(Name name, PhoneNumber phoneNumber, EmailAddress emailAddress, DateOfBirth dateOfBirth, Gender gender)
     {
-        return new Patient(Id.CreateId().Value, [], name, phoneNumber, emailAddress, dateOfBirth, gender);
+        return new Patient(Id.CreateId(), [], name, phoneNumber, emailAddress, dateOfBirth, gender);
     }
 
     private Patient(Id id,

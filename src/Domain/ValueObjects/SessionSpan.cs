@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.Common.Errors;
 using Domain.Primitives;
 
 namespace Domain.ValueObjects;
@@ -13,20 +14,24 @@ public class SessionSpan : ValueObject
 
     public static Result<SessionSpan> Create(DateTime sessionStart, DateTime sessionEnd)
     {
-        if(!ValidateSessionTimes(sessionStart, sessionEnd))
+        if(sessionStart > sessionEnd)
         {
-            return Result<SessionSpan>.Failure(new ArgumentException());
+            return Result<SessionSpan>.Failure(SessionSpanErrors.Invalid);
+        }
+
+        var duration = sessionEnd - sessionStart;
+
+        if(duration.Minutes > MaxSessionLengthMinutes)
+        {
+            return Result<SessionSpan>.Failure(SessionSpanErrors.ExceedMaxDuration);
+        }
+
+        if(duration.Minutes < MinSessionLengthMinutes)
+        {
+            return Result<SessionSpan>.Failure(SessionSpanErrors.LessThanMinDuration);
         }
 
         return new SessionSpan(sessionStart, sessionEnd);
-    }
-
-    private static bool ValidateSessionTimes(DateTime sessionStart, DateTime sessionEnd)
-    {
-        return sessionStart >= DateTime.UtcNow
-            && sessionEnd > sessionStart
-            && (sessionEnd - sessionStart).TotalMinutes >= MinSessionLengthMinutes
-            && (sessionEnd - sessionStart).TotalMinutes <= MaxSessionLengthMinutes;
     }
 
     private SessionSpan(DateTime sessionStart, DateTime sessionEnd)

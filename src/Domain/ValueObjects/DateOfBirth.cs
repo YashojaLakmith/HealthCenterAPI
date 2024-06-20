@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.Common.Errors;
 using Domain.Primitives;
 
 namespace Domain.ValueObjects;
@@ -14,13 +15,21 @@ public sealed class DateOfBirth : ValueObject
 
     public static Result<DateOfBirth> Create(DateTime dob)
     {
-        var current = DateTime.Now;
-        if(dob >= current)
+        if (IsAgeLessThan16Years(dob))
         {
-            return Result<DateOfBirth>.Failure(new ArgumentException());
+            return Result<DateOfBirth>.Failure(DateOfBirthErrors.AgeIsLowerThan16Years);
         }
 
-        return new DateOfBirth(current);
+        return new DateOfBirth(dob);
+    }
+
+    private static bool IsAgeLessThan16Years(DateTime dateOfBirth)
+    {
+        var now = DateTime.UtcNow;
+        var dobMonths = (dateOfBirth.Year * 12) + dateOfBirth.Month;
+        var nowMonths = (now.Year * 12) + now.Month;
+
+        return (nowMonths - dobMonths) < (16 * 12);
     }
 
     public override IEnumerable<object> GetAtomicValues()

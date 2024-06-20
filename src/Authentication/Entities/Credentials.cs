@@ -1,16 +1,10 @@
-﻿using System.Security.Cryptography;
-
-using Authentication.Errors;
-using Authentication.Services;
-using Authentication.ValueObjects;
-
-using Domain.Common;
+﻿using Domain.Common;
 using Domain.Entities;
 using Domain.Primitives;
 using Domain.ValueObjects;
 
 namespace Authentication.Entities;
-public sealed class Credentials : AggregateRoot
+public sealed class Credentials : Entity
 {
     public Admin Admin { get; internal set; }
     public IReadOnlyCollection<byte> PasswordHash { get; internal set; }
@@ -27,4 +21,6 @@ public sealed class Credentials : AggregateRoot
         PasswordHash = passwordHash;
         Salt = salt;
     }
+
+
 }

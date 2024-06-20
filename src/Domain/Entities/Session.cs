@@ -12,8 +12,7 @@ public class Session : Entity
 
     public static Session Create(SessionSpan span, Doctor doctor)
     {
-        var idResult = Id.CreateId();
-        return new Session(idResult.Value, span, doctor);
+        return new Session(Id.CreateId(), span, doctor);
     }
 
     private Session(Id id, SessionSpan sessionSpan, Doctor doctor) : base(id)

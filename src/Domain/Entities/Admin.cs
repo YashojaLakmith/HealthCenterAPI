@@ -16,8 +16,7 @@ public class Admin : Entity
 
     public static Admin CreateUser(Name userName, EmailAddress email, PhoneNumber phoneNumber, NIC nic, Role role, Gender gender)
     {
-        var idResult = Id.CreateId();
-        return new Admin(idResult.Value, userName, email, phoneNumber, nic, role, gender, DateTime.UtcNow);
+        return new Admin(Id.CreateId(), userName, email, phoneNumber, nic, role, gender, DateTime.UtcNow);
     }
 
     private Admin(Id id, Name adminName, EmailAddress email, PhoneNumber phoneNumber, NIC nic, Role role, Gender gender, DateTime createOn) : base(id)

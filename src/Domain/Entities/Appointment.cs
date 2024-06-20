@@ -23,7 +23,7 @@ public sealed class Appointment : Entity
 
     public static Appointment Create(Session session, Patient patient)
     {
-        return new Appointment(Id.CreateId().Value, AppointmentStatus.Pending, DateTime.UtcNow, session, patient);
+        return new Appointment(Id.CreateId(), AppointmentStatus.Pending, DateTime.UtcNow, session, patient);
     }
 
     public Result PatientArrived()
