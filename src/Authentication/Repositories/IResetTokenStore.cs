@@ -9,7 +9,7 @@ public interface IResetTokenStore
 {
     Task SetTokenAsync(ResetToken resetToken, byte[] serializedClaims, CancellationToken cancellationToken = default);
 
-    Task<Result<IReadOnlyCollection<Claim>>> GetTokenClaimsAsync(ResetToken resetToken, CancellationToken tokenCancellationToken = default);
+    Task<Result<byte[]>> GetTokenClaimsAsync(ResetToken resetToken, CancellationToken cancellationToken = default);
 
     Task RemoveTokenAsync(ResetToken resetToken, CancellationToken cancellationToken = default);
 }

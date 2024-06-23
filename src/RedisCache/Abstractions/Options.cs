@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 
 namespace DistributedRedisCache.Abstractions;
-internal sealed class Options
+public sealed class Options
 {
     private readonly IConfiguration _configuration;
 

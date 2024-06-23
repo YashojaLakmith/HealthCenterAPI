@@ -30,8 +30,8 @@ public sealed class PasswordChangeService : IPasswordChangeService
         }
 
         await _resetTokenStore.RemoveTokenAsync(resetToken, cancellationToken);
-
-        var nameIdClaim = tokenResult.Value.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier);
+        var tokenClaims = await ClaimSerializer.DeserializeClaimsAsync(tokenResult.Value, cancellationToken);
+        var nameIdClaim = tokenClaims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier);
         if (nameIdClaim is null)
         {
             return Result.Failure(ClaimErrors.CouldNotProvideIdentity);
