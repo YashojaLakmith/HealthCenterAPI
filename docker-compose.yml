@@ -1,0 +1,9 @@
+services:
+    api:
+        image: blah
+
+    redis:
+        image: redis
+        
+    rabbitmq:
+        image: rabbitmq
