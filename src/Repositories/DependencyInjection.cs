@@ -12,10 +12,10 @@ public static class DependencyInjection
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         return services.AddScoped<IAppointmentRepository, AppointmentRepository>()
-                        .AddScoped<IAuthServiceRepository, AuthenticationServiceRepository>()
+                        .AddScoped<ICredentialRepository, CredentialRepository>()
                         .AddScoped<IDoctorRepository, DoctorRepository>()
                         .AddScoped<IPatientRepository, PatientRepository>()
                         .AddScoped<ISessionRepository, SessionRepository>()
-                        .AddScoped<IAdminRepository, UserRepository>();
+                        .AddScoped<IAdminRepository, AdminRepository>();
     }
 }

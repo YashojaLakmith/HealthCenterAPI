@@ -13,9 +13,9 @@ namespace Authentication.Services;
 public sealed class PasswordAuthenticationService : IPasswordAuthenticationService
 {
     private readonly ISessionTokenStore _sessionStore;
-    private readonly IAuthServiceRepository _credRepository;
+    private readonly ICredentialRepository _credRepository;
 
-    public PasswordAuthenticationService(ISessionTokenStore sessionStore, IAuthServiceRepository credRepository)
+    public PasswordAuthenticationService(ISessionTokenStore sessionStore, ICredentialRepository credRepository)
     {
         _sessionStore = sessionStore;
         _credRepository = credRepository;

@@ -4,7 +4,7 @@ using Domain.Common;
 using Domain.ValueObjects;
 
 namespace Authentication.Repositories;
-public interface IAuthServiceRepository
+public interface ICredentialRepository
 {
     Task<Result<Credentials>> GetCredentialObjectByIdAsync(Id userId, CancellationToken cancellationToken = default);
 

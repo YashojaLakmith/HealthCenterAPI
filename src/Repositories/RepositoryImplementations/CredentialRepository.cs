@@ -10,11 +10,11 @@ using Infrastructure.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repositories.RepositoryImplementations;
-internal class AuthenticationServiceRepository : IAuthServiceRepository
+internal class CredentialRepository : ICredentialRepository
 {
     private readonly IApplicationDbContext _context;
 
-    public AuthenticationServiceRepository(IApplicationDbContext context)
+    public CredentialRepository(IApplicationDbContext context)
     {
         _context = context;
     }
@@ -22,23 +22,18 @@ internal class AuthenticationServiceRepository : IAuthServiceRepository
     public async Task<Result<Credentials>> GetCredentialObjectByEmailAsync(EmailAddress emailAddress, CancellationToken cancellationToken = default)
     {
         var result = await _context.Credentials
-                                        .Include(credential => credential.User)
-                                        .Where(credential => credential.User.EmailAddress == emailAddress)
+                                        .Include(credential => credential.Admin)
+                                        .Where(credential => credential.Admin.EmailAddress == emailAddress)
                                         .FirstOrDefaultAsync(cancellationToken);
 
-        if (result is null)
-        {
-            return Result<Credentials>.Failure(RepositoryErrors.NotFoundError);
-        }
-
-        return result;
+        return result ?? Result<Credentials>.Failure(RepositoryErrors.NotFoundError);
     }
 
     public async Task<Result<Credentials>> GetCredentialObjectByIdAsync(Id userId, CancellationToken cancellationToken = default)
     {
         var result = await _context.Credentials
-                                    .Include(cred => cred.User)
-                                    .Where(cred => cred.User.Id == userId)
+                                    .Include(cred => cred.Admin)
+                                    .Where(cred => cred.Admin.Id == userId)
                                     .FirstOrDefaultAsync(cancellationToken);
 
         if (result is null)

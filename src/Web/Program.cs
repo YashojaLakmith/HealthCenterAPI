@@ -1,15 +1,9 @@
 using Application;
 using Application.Authentication;
-
 using AzureKeyVaultSecrets;
-
 using Infrastructure;
-
 using Presentation;
-
 using Repositories;
-
-using Web.Configure;
 
 namespace Web;
 

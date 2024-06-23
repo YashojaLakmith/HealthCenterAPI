@@ -1,22 +1,17 @@
 ﻿using Domain.Common;
 using Domain.Entities;
-using Domain.Query;
+using Domain.Enum;
 using Domain.Repositories;
 using Domain.ValueObjects;
-
 using Infrastructure.Abstractions;
-
 using Microsoft.EntityFrameworkCore;
 
-using Repositories.CustomQueries;
-using Repositories.Evaluators;
-
 namespace Repositories.RepositoryImplementations;
-internal class UserRepository : IAdminRepository
+internal class AdminRepository : IAdminRepository
 {
     private readonly IApplicationDbContext _dbContext;
 
-    public UserRepository(IApplicationDbContext dbContext)
+    public AdminRepository(IApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -33,6 +28,24 @@ internal class UserRepository : IAdminRepository
         return Task.FromResult(Result.Success());
     }
 
+    public async Task<Result<Role>> GetRolesAsync(Id invokerId, CancellationToken cancellationToken)
+    {
+        var resultSet = await _dbContext.Users
+            .AsNoTracking()
+            .Where(admin => admin.Id == invokerId)
+            .Select(admin => admin.Role)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return resultSet == default ? Result<Role>.Failure(RepositoryErrors.NotFoundError) : resultSet;
+    }
+
+    public async Task<bool> IsPhoneNumberExistsAsync(PhoneNumber newPhoneNumber, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Users
+            .AsNoTracking()
+            .AnyAsync(admin => admin.PhoneNumber == newPhoneNumber, cancellationToken);
+    }
+
     public async Task<Result<Admin>> GetByEmailAsync(EmailAddress emailAddress, CancellationToken cancellationToken = default)
     {
         var result = await _dbContext.Users
@@ -45,15 +58,6 @@ internal class UserRepository : IAdminRepository
         }
 
         return result;
-    }
-
-    public async Task<Result<List<Admin>>> GetByFilteredQueryAsync(CustomQuery<Admin> customQuery, Pagination pagination, CancellationToken cancellationToken = default)
-    {
-        return await _dbContext.Users
-                                .AsNoTracking()
-                                .EvaluateCustomQuery(customQuery)
-                                .ApplyPagination(pagination)
-                                .ToListAsync(cancellationToken);
     }
 
     public async Task<Result<Admin>> GetByIdAsync(Id userId, CancellationToken cancellationToken = default)
@@ -70,7 +74,7 @@ internal class UserRepository : IAdminRepository
         return result;
     }
 
-    public async Task<Result<bool>> IsEmailExistsAsync(EmailAddress emailAddress, CancellationToken cancellationToken = default)
+    public async Task<bool> IsEmailExistsAsync(EmailAddress emailAddress, CancellationToken cancellationToken = default)
     {
         return await _dbContext.Users
                                 .AsNoTracking()

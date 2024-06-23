@@ -27,15 +27,6 @@ internal class AppointmentRepository : IAppointmentRepository
         return Task.FromResult(Result.Success());
     }
 
-    public async Task<Result<List<Appointment>>> GetByFilteredQueryAsync(CustomQuery<Appointment> customQuery, Pagination pagination, CancellationToken cancellationToken = default)
-    {
-        return await _dbContext.Appointments
-                                    .AsNoTracking()
-                                    .EvaluateCustomQuery(customQuery)
-                                    .ApplyPagination(pagination)
-                                    .ToListAsync(cancellationToken);
-    }
-
     public async Task<Result<Appointment>> GetByIdAsync(Id appointmentId, CancellationToken cancellationToken = default)
     {
         var resultSet = await _dbContext.Appointments
@@ -44,17 +35,6 @@ internal class AppointmentRepository : IAppointmentRepository
                                         .Where(appointment => appointment.Id == appointmentId)
                                         .FirstOrDefaultAsync(cancellationToken);
 
-        if (resultSet is null)
-        {
-            return Result<Appointment>.Failure(RepositoryErrors.NotFoundError);
-        }
-
-        return resultSet;
-    }
-
-    public async Task<Result> InsertNewAsync(Appointment appointment, CancellationToken cancellationToken = default)
-    {
-        await _dbContext.Appointments.AddAsync(appointment, cancellationToken);
-        return Result.Success();
+        return resultSet ?? Result<Appointment>.Failure(RepositoryErrors.NotFoundError);
     }
 }

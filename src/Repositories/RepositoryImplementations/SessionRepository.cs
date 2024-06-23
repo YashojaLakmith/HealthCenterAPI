@@ -21,40 +21,13 @@ internal class SessionRepository : ISessionRepository
         _dbContext = dbContext;
     }
 
-    public Task<Result> DeleteAsync(Session session, CancellationToken cancellationToken = default)
-    {
-        _dbContext.Sessions.Remove(session);
-        return Task.FromResult(Result.Success());
-    }
-
-    public async Task<Result<List<Session>>> GetByFilteredQueryAsync(CustomQuery<Session> customQuery, Pagination pagination, CancellationToken cancellationToken = default)
-    {
-        return await _dbContext.Sessions
-                                .AsNoTracking()
-                                .EvaluateCustomQuery(customQuery)
-                                .ApplyPagination(pagination)
-                                .ToListAsync(cancellationToken);
-    }
-
     public async Task<Result<Session>> GetByIdAsync(Id sessionId, CancellationToken cancellationToken = default)
     {
         var result = await _dbContext.Sessions
-                                    .Include(session => session.Appointments)
                                     .Include(session => session.Doctor)
                                     .Where(session => session.Id == sessionId)
                                     .FirstOrDefaultAsync(cancellationToken);
 
-        if (result is null)
-        {
-            return Result<Session>.Failure(RepositoryErrors.NotFoundError);
-        }
-
-        return result;
-    }
-
-    public async Task<Result> InsertNewAsync(Session newSession, CancellationToken cancellationToken = default)
-    {
-        await _dbContext.Sessions.AddAsync(newSession, cancellationToken);
-        return Result.Success();
+        return result ?? Result<Session>.Failure(RepositoryErrors.NotFoundError);
     }
 }

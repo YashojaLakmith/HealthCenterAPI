@@ -1,15 +1,9 @@
 ﻿using Domain.Common;
 using Domain.Entities;
-using Domain.Query;
 using Domain.Repositories;
 using Domain.ValueObjects;
-
 using Infrastructure.Abstractions;
-
 using Microsoft.EntityFrameworkCore;
-
-using Repositories.CustomQueries;
-using Repositories.Evaluators;
 
 namespace Repositories.RepositoryImplementations;
 internal class PatientRepository : IPatientRepository
@@ -27,13 +21,11 @@ internal class PatientRepository : IPatientRepository
         return Task.FromResult(Result.Success());
     }
 
-    public async Task<Result<List<Patient>>> GetByFilteredQueryAsync(CustomQuery<Patient> customQuery, Pagination pagination, CancellationToken cancellationToken = default)
+    public async Task<bool> IsPhoneNumberExistsAsync(PhoneNumber newPhoneNumber, CancellationToken cancellationToken)
     {
         return await _dbContext.Patients
-                                .AsNoTracking()
-                                .EvaluateCustomQuery(customQuery)
-                                .ApplyPagination(pagination)
-                                .ToListAsync(cancellationToken);
+            .AsNoTracking()
+            .AnyAsync(patient => patient.PhoneNumber == newPhoneNumber, cancellationToken);
     }
 
     public async Task<Result<Patient>> GetByIdAsync(Id patientId, CancellationToken cancellationToken = default)
@@ -43,12 +35,7 @@ internal class PatientRepository : IPatientRepository
                                         .Where(p => p.Id == patientId)
                                         .FirstOrDefaultAsync(cancellationToken);
 
-        if (result is null)
-        {
-            return Result<Patient>.Failure(RepositoryErrors.NotFoundError);
-        }
-
-        return result;
+        return result ?? Result<Patient>.Failure(RepositoryErrors.NotFoundError);
     }
 
     public async Task<Result> InsertNewAsync(Patient newPatient, CancellationToken cancellationToken = default)
@@ -57,7 +44,7 @@ internal class PatientRepository : IPatientRepository
         return Result.Success();
     }
 
-    public async Task<Result<bool>> IsEmailExistsAsync(EmailAddress emailAddress, CancellationToken cancellationToken = default)
+    public async Task<bool> IsEmailExistsAsync(EmailAddress emailAddress, CancellationToken cancellationToken = default)
     {
         return await _dbContext.Patients
                                 .AsNoTracking()

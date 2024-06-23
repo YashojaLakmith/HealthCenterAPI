@@ -11,9 +11,9 @@ namespace Authentication.Services;
 public sealed class PasswordChangeService : IPasswordChangeService
 {
     private readonly IResetTokenStore _resetTokenStore;
-    private readonly IAuthServiceRepository _credentialRepository;
+    private readonly ICredentialRepository _credentialRepository;
 
-    public PasswordChangeService(IResetTokenStore resetTokenStore, IAuthServiceRepository credentialRepository)
+    public PasswordChangeService(IResetTokenStore resetTokenStore, ICredentialRepository credentialRepository)
     {
         _resetTokenStore = resetTokenStore;
         _credentialRepository = credentialRepository;

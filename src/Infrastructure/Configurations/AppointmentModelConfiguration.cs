@@ -25,11 +25,6 @@ internal class AppointmentModelConfiguration : IEntityTypeConfiguration<Appointm
         builder.HasKey(a => a.Id)
             .IsClustered(false);
 
-        builder.HasOne(a => a.Session)
-            .WithMany(s => s.Appointments)
-            .HasForeignKey(@"SessionId")
-            .OnDelete(DeleteBehavior.Cascade);
-
         builder.HasOne(a => a.Patient)
             .WithMany(p => p.Appointments)
             .HasForeignKey(@"PatientId")

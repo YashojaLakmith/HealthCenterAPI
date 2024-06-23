@@ -1,5 +1,5 @@
 ﻿namespace Domain.Common.Errors;
-public static class RoleChangeErrors
+public static class RoleErrors
 {
     private const string ErrorCodeFamily = @"RoleChange";
 

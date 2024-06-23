@@ -1,4 +1,6 @@
-﻿using Authentication.ValueObjects;
+﻿using Authentication.Errors;
+using Authentication.Services;
+using Authentication.ValueObjects;
 
 using Domain.Common;
 using Domain.Entities;
@@ -8,13 +10,22 @@ using Domain.ValueObjects;
 namespace Authentication.Entities;
 public sealed class Credentials : Entity
 {
-    public Admin Admin { get; internal set; }
-    public IReadOnlyCollection<byte> PasswordHash { get; internal set; }
-    public IReadOnlyCollection<byte> Salt {  get; internal set; }   
+    public Admin Admin { get; }
+    public IReadOnlyCollection<byte> PasswordHash { get; private set; }
+    public IReadOnlyCollection<byte> Salt {  get; private set; }   
 
-    public static Result<Credentials> CreateCredentials(Id credentialId, Admin user, IReadOnlyCollection<byte> passwordHash, IReadOnlyCollection<byte> salt)
+    public static Credentials CreateCredentials(Id credentialId, Admin user, IReadOnlyCollection<byte> passwordHash, IReadOnlyCollection<byte> salt)
     {
         return new Credentials(credentialId, user, passwordHash, salt);
+    }
+
+    public static Credentials CreateCredentials(Admin admin)
+    {
+        var salt = PasswordDerivation.DeriveNewSalt();
+        var passwordStr = PasswordDerivation.DeriveRandomPasswordString();
+        var hash = PasswordDerivation.DerivePassword(passwordStr, salt);
+
+        return new Credentials(Id.CreateId(), admin, hash, salt);
     }
 
     private Credentials(Id id, Admin admin, IReadOnlyCollection<byte> passwordHash, IReadOnlyCollection<byte> salt) : base(id)
@@ -26,16 +37,27 @@ public sealed class Credentials : Entity
 
     public Result ChangePasswordAfterAuthenticating(Password currentPassword, Password newPassword)
     {
-        throw new NotImplementedException();
+        if (!CanAuthenticateWithPassword(currentPassword))
+        {
+            return Result.Failure(AuthenticationErrors.PasswordAuthenticationFailedError);
+        }
+
+        ChangePassword(newPassword);
+        return Result.Success();
     }
 
     public bool CanAuthenticateWithPassword(Password password)
     {
-        throw new NotImplementedException();
+        var challengeHash = PasswordDerivation.DerivePassword(password.Value, Salt.ToArray());
+        return challengeHash.SequenceEqual(PasswordHash);
     }
 
     public Result ChangePassword(Password newPassword)
     {
-        throw new NotImplementedException();
+        var newSalt = PasswordDerivation.DeriveNewSalt();
+        PasswordHash = PasswordDerivation.DerivePassword(newPassword.Value, newSalt);
+        Salt = newSalt;
+        
+        return Result.Success();
     }
 }

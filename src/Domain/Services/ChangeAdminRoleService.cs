@@ -26,7 +26,7 @@ public class ChangeAdminRoleService : IChangeAdminRoleService
 
         if(invokingAdminRoleReult.Value > newRole)
         {
-            return Result.Failure(RoleChangeErrors.NotHaveAuthorization);
+            return Result.Failure(RoleErrors.NotHaveAuthorization);
         }
 
         admin.ChangeRole(newRole);

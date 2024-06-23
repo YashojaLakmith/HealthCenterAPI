@@ -11,12 +11,12 @@ using Domain.ValueObjects;
 namespace Application.Authentication.CommandHandlers;
 internal class ChangePasswordCommandHandler : ICommandHandler<ChangePasswordCommand>
 {
-    private readonly IAuthServiceRepository _authRepository;
+    private readonly ICredentialRepository _credentialRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public ChangePasswordCommandHandler(IAuthServiceRepository authRepository, IUnitOfWork unitOfWork)
+    public ChangePasswordCommandHandler(ICredentialRepository credentialRepository, IUnitOfWork unitOfWork)
     {
-        _authRepository = authRepository;
+        _credentialRepository = credentialRepository;
         _unitOfWork = unitOfWork;
     }
 
@@ -40,7 +40,7 @@ internal class ChangePasswordCommandHandler : ICommandHandler<ChangePasswordComm
             return emailResult;
         }
 
-        var credentialResult = await _authRepository.GetCredentialObjectByEmailAsync(emailResult.Value, cancellationToken);
+        var credentialResult = await _credentialRepository.GetCredentialObjectByEmailAsync(emailResult.Value, cancellationToken);
         if (credentialResult.IsFailure)
         {
             return credentialResult;

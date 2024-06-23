@@ -10,7 +10,7 @@ internal class CredentialModelConfiguration : IEntityTypeConfiguration<Credentia
     {
         builder.Ignore(cred => cred.Id);
 
-        builder.Property(cred => cred.User)
+        builder.Property(cred => cred.Admin)
             .IsRequired(true);
 
         builder.Property(cred => cred.PasswordHash)
@@ -23,12 +23,12 @@ internal class CredentialModelConfiguration : IEntityTypeConfiguration<Credentia
 
         builder.HasNoKey();
 
-        builder.HasOne(cred => cred.User)
+        builder.HasOne(cred => cred.Admin)
             .WithOne()
-            .HasForeignKey<Credentials>(cred => cred.User)
+            .HasForeignKey<Credentials>(cred => cred.Admin)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasIndex(cred => cred.User)
+        builder.HasIndex(cred => cred.Admin)
             .IsClustered(false)
             .IsUnique(true);
     }

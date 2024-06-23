@@ -9,9 +9,9 @@ namespace Authentication.Services;
 public class ResetTokenRequetService : IResetTokenRequetService
 {
     private readonly IResetTokenStore _resetTokenStore;
-    private readonly IAuthServiceRepository _credentialRespository;
+    private readonly ICredentialRepository _credentialRespository;
 
-    public ResetTokenRequetService(IResetTokenStore resetTokenStore, IAuthServiceRepository credentialRespository)
+    public ResetTokenRequetService(IResetTokenStore resetTokenStore, ICredentialRepository credentialRespository)
     {
         _resetTokenStore = resetTokenStore;
         _credentialRespository = credentialRespository;

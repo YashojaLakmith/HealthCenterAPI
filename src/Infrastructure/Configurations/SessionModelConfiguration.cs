@@ -10,9 +10,6 @@ internal class SessionModelConfiguration : IEntityTypeConfiguration<Session>
 {
     public void Configure(EntityTypeBuilder<Session> builder)
     {
-        builder.Property(session => session.Appointments)
-            .HasField(@"_appointments");
-
         builder.Property(session => session.Id)
             .IsRequired(true)
             .HasConversion(
