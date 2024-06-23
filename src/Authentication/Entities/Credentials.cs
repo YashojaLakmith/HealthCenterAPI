@@ -1,67 +1,63 @@
-﻿using System.Security.Cryptography;
-
+﻿using Authentication.Errors;
 using Authentication.Services;
 using Authentication.ValueObjects;
 
 using Domain.Common;
 using Domain.Entities;
 using Domain.Primitives;
+using Domain.ValueObjects;
 
 namespace Authentication.Entities;
-public sealed class Credentials : Entity, IDisposable
+public sealed class Credentials : Entity
 {
-    private const int Iterations = 100000;
-    private const int HashBitLength = 256;
-    private const int SaltBitLength = 256;
+    public Admin Admin { get; }
+    public IReadOnlyCollection<byte> PasswordHash { get; private set; }
+    public IReadOnlyCollection<byte> Salt {  get; private set; }   
 
-    private byte[] _passwordHash;
-    private byte[] _salt;
-
-    public User User { get; private set; }
-    public IReadOnlyCollection<byte> PasswordHash => _passwordHash;
-    public IReadOnlyCollection<byte> Salt => _salt;
-
-    public Result AuthenticateUsingPassword(Password password)
+    public static Credentials CreateCredentials(Id credentialId, Admin user, IReadOnlyCollection<byte> passwordHash, IReadOnlyCollection<byte> salt)
     {
-        var challengePassword = PasswordDerivation.DerivePassword(password.Value, _salt, HashBitLength, Iterations);
-        return challengePassword.SequenceEqual(_passwordHash) ? Result.Success() : Result.Failure(new Exception());
+        return new Credentials(credentialId, user, passwordHash, salt);
+    }
+
+    public static Credentials CreateCredentials(Admin admin)
+    {
+        var salt = PasswordDerivation.DeriveNewSalt();
+        var passwordStr = PasswordDerivation.DeriveRandomPasswordString();
+        var hash = PasswordDerivation.DerivePassword(passwordStr, salt);
+
+        return new Credentials(Id.CreateId(), admin, hash, salt);
+    }
+
+    private Credentials(Id id, Admin admin, IReadOnlyCollection<byte> passwordHash, IReadOnlyCollection<byte> salt) : base(id)
+    {
+        Admin = admin;
+        PasswordHash = passwordHash;
+        Salt = salt;
+    }
+
+    public Result ChangePasswordAfterAuthenticating(Password currentPassword, Password newPassword)
+    {
+        if (!CanAuthenticateWithPassword(currentPassword))
+        {
+            return Result.Failure(AuthenticationErrors.PasswordAuthenticationFailedError);
+        }
+
+        ChangePassword(newPassword);
+        return Result.Success();
+    }
+
+    public bool CanAuthenticateWithPassword(Password password)
+    {
+        var challengeHash = PasswordDerivation.DerivePassword(password.Value, Salt.ToArray());
+        return challengeHash.SequenceEqual(PasswordHash);
     }
 
     public Result ChangePassword(Password newPassword)
     {
-        _salt = RandomNumberGenerator.GetBytes(SaltBitLength / 8);
-        _passwordHash = PasswordDerivation.DerivePassword(newPassword.Value, _salt, HashBitLength, Iterations);
-        UpdateTimeStamp();
+        var newSalt = PasswordDerivation.DeriveNewSalt();
+        PasswordHash = PasswordDerivation.DerivePassword(newPassword.Value, newSalt);
+        Salt = newSalt;
+        
         return Result.Success();
-    }
-
-    public static Result<Credentials> CreateCredentials(User user, IEnumerable<byte> passwordHash, IEnumerable<byte> salt, Guid timeStamp)
-    {
-        return new Credentials(user, passwordHash, salt, timeStamp);
-    }
-
-    public static Result<Credentials> CreateCredentials(User user)
-    {
-        var pw = RandomNumberGenerator.GetBytes(HashBitLength / 8);
-        var pwString = Convert.ToHexString(pw);
-        var salt = RandomNumberGenerator.GetBytes(SaltBitLength / 8);
-        var hash = PasswordDerivation.DerivePassword(pwString, salt, HashBitLength, Iterations);
-
-        Array.Clear(pw);
-        return new Credentials(user, hash, salt, Guid.NewGuid());
-    }
-
-    public void Dispose()
-    {
-        Array.Clear(_passwordHash);
-        Array.Clear(_salt);
-    }
-
-    private Credentials(User user, IEnumerable<byte> passwordHash, IEnumerable<byte> salt, Guid timeStamp)
-    {
-        User = user;
-        _passwordHash = passwordHash.ToArray();
-        _salt = salt.ToArray();
-        CurrentTimeStamp = timeStamp;
     }
 }

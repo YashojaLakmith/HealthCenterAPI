@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.Common.Errors;
 using Domain.Primitives;
 
 namespace Domain.ValueObjects;
@@ -17,22 +18,19 @@ public class Id : ValueObject
         return Result<Id>.Success(new Id(id));
     }
 
-    public static Result<Id> CreateId()
+    public static Id CreateId()
     {
-        return Result<Id>.Success(new Id(Guid.NewGuid()));
+        return new Id(Guid.NewGuid());
     }
 
     public static Result<Id> CreateId(string idString)
     {
-        try
+        if(!Guid.TryParse(idString, out var guid))
         {
-            var guid = new Guid(idString);
-            return Result<Id>.Success(new Id(guid));
+            return Result<Id>.Failure(IdErrors.InvalidId);
         }
-        catch (FormatException ex)
-        {
-            return Result<Id>.Failure(ex);
-        }
+
+        return new Id(guid);
     }
 
     public override IEnumerable<object> GetAtomicValues()

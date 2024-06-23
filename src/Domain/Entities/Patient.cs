@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.Common.Errors;
 using Domain.Enum;
 using Domain.Primitives;
 using Domain.ValueObjects;
@@ -7,21 +8,16 @@ namespace Domain.Entities;
 
 public class Patient : Entity
 {
-    private readonly List<Appointment> _appointments = [];
+    private List<Appointment> _appointments = [];
 
     public Name PatientName { get; private set; }
     public PhoneNumber PhoneNumber { get; private set; }
     public EmailAddress EmailAddress { get; private set; }
     public DateOfBirth DateOfBirth { get; private set; }
-    public (int years, int months) Age => CalculateAge();
     public Gender Gender { get; private set; }
+    public (int years, int months) Age => CalculateAge();
 
     public IReadOnlyCollection<Appointment> Appointments => _appointments;
-
-    public static Result<Patient> CreatePatient(Name name, PhoneNumber phoneNumber, EmailAddress emailAddress, DateOfBirth dateOfBirth, Gender gender)
-    {
-        return new Patient(Id.CreateId().Value, name, phoneNumber, emailAddress, dateOfBirth, gender);
-    }
 
     private (int years, int months) CalculateAge()
     {
@@ -31,15 +27,25 @@ public class Patient : Entity
         var dobMonths = (dob.Year * 12) + dob.Month;
         var currentMonths = (now.Year * 12) + now.Month;
         var diff = currentMonths - dobMonths;
-        
-        return (diff / 12,  diff % 12);
+
+        return (diff / 12, diff % 12);
     }
 
-    private Patient() : base() { }
-
-    private Patient(Id id, Name name, PhoneNumber phoneNumber, EmailAddress emailAddress, DateOfBirth dateOfBirth, Gender gender) : base(id)
+    public static Result<Patient> CreatePatient(Name name, PhoneNumber phoneNumber, EmailAddress emailAddress, DateOfBirth dateOfBirth, Gender gender)
     {
-        PatientName = name;
+        return new Patient(Id.CreateId(), [], name, phoneNumber, emailAddress, dateOfBirth, gender);
+    }
+
+    private Patient(Id id,
+        IEnumerable<Appointment> appointments,
+        Name patientName,
+        PhoneNumber phoneNumber,
+        EmailAddress emailAddress,
+        DateOfBirth dateOfBirth,
+        Gender gender) : base(id)
+    {
+        _appointments = [..appointments];
+        PatientName = patientName;
         PhoneNumber = phoneNumber;
         EmailAddress = emailAddress;
         DateOfBirth = dateOfBirth;
@@ -48,14 +54,20 @@ public class Patient : Entity
 
     public Result AddAppointment(Session session)
     {
-        if(_appointments.Any(appointment => appointment.Session == session))
+        if(session.SessionSpan.SessionStartValue < DateTime.UtcNow)
         {
-            // failed
+            return Result.Failure(AppointmentErrors.SessionHasEnded);
         }
 
-        var newAppointmentResult = Appointment.Create(session, this);
-        _appointments.Add(newAppointmentResult.Value);
+        var hasExistingAppointments = _appointments.Any(a => a.Session == session);
 
+        if (hasExistingAppointments)
+        {
+            return Result.Failure(AppointmentErrors.EnrollingForSameSession);
+        }
+
+        var newAppointment = Appointment.Create(session, this);
+        _appointments.Add(newAppointment);
         return Result.Success();
     }
 
@@ -71,8 +83,15 @@ public class Patient : Entity
         return Result.Success();
     }
 
-    public Result RemoveAppointment(Appointment appointment)
+    public Result RemoveAppointment(Id appointmentId)
     {
-        throw new NotImplementedException();
+        var appointment = _appointments.FirstOrDefault(a => a.Id == appointmentId);
+        if(appointment is null)
+        {
+            return Result.Failure(AppointmentErrors.AppointmentNotFound);
+        }
+
+        _appointments.Remove(appointment);
+        return Result.Success();
     }
 }

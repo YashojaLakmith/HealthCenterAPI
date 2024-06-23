@@ -5,9 +5,9 @@ using Application.Doctor.Views;
 using Domain.Common;
 
 namespace Application.Doctor.QueryHandlers;
-internal class ViewDoctorPublicDetailsByIdQueryHandler : IQueryHandler<DoctorDetailViewPublic, IdCommandQuery>
+internal class ViewDoctorPublicDetailsByIdQueryHandler : IQueryHandler<DoctorDetailViewPublic, IdQuery>
 {
-    public Task<Result<DoctorDetailViewPublic>> HandleAsync(IdCommandQuery query, CancellationToken cancellationToken = default)
+    public Task<Result<DoctorDetailViewPublic>> HandleAsync(IdQuery query, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }

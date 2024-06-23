@@ -8,6 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		LICENSE.txt = LICENSE.txt
+		docker-compose.yml = docker-compose.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -25,11 +26,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "src\Infra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repositories", "src\Repositories\Repositories.csproj", "{568AE14F-89E3-400E-AA19-7675B2BD434E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication", "src\Authentication\Authentication.csproj", "{24FF06F0-4DEA-4AE3-A92C-115E8EA84B12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authentication", "src\Authentication\Authentication.csproj", "{24FF06F0-4DEA-4AE3-A92C-115E8EA84B12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureKeyVaultSecrets", "src\AzureKeyVaultSecrets\AzureKeyVaultSecrets.csproj", "{C44C57E7-3080-4FEC-A417-E7D5B7087D2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureKeyVaultSecrets", "src\AzureKeyVaultSecrets\AzureKeyVaultSecrets.csproj", "{C44C57E7-3080-4FEC-A417-E7D5B7087D2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Authentication", "src\Application.Authentication\Application.Authentication.csproj", "{47719C4A-A780-4414-8941-8B515955F84B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Authentication", "src\Application.Authentication\Application.Authentication.csproj", "{47719C4A-A780-4414-8941-8B515955F84B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DistributedRedisCache", "src\RedisCache\DistributedRedisCache.csproj", "{9FA33B93-DA88-4529-BE8D-296422BD4AC1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventContacts", "src\EventContacts\EventContacts.csproj", "{B061ADDC-0288-482F-A251-361CE5B682DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +78,14 @@ Global
 		{47719C4A-A780-4414-8941-8B515955F84B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47719C4A-A780-4414-8941-8B515955F84B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47719C4A-A780-4414-8941-8B515955F84B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FA33B93-DA88-4529-BE8D-296422BD4AC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FA33B93-DA88-4529-BE8D-296422BD4AC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FA33B93-DA88-4529-BE8D-296422BD4AC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FA33B93-DA88-4529-BE8D-296422BD4AC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B061ADDC-0288-482F-A251-361CE5B682DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B061ADDC-0288-482F-A251-361CE5B682DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B061ADDC-0288-482F-A251-361CE5B682DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B061ADDC-0288-482F-A251-361CE5B682DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,6 +100,8 @@ Global
 		{24FF06F0-4DEA-4AE3-A92C-115E8EA84B12} = {C27EB3B7-1168-4257-BA5C-1EF5A5B64B8A}
 		{C44C57E7-3080-4FEC-A417-E7D5B7087D2B} = {C27EB3B7-1168-4257-BA5C-1EF5A5B64B8A}
 		{47719C4A-A780-4414-8941-8B515955F84B} = {C27EB3B7-1168-4257-BA5C-1EF5A5B64B8A}
+		{9FA33B93-DA88-4529-BE8D-296422BD4AC1} = {C27EB3B7-1168-4257-BA5C-1EF5A5B64B8A}
+		{B061ADDC-0288-482F-A251-361CE5B682DE} = {C27EB3B7-1168-4257-BA5C-1EF5A5B64B8A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CA5C4D54-8618-4BE1-A0BB-45923A2A2414}

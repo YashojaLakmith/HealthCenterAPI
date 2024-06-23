@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.Common.Errors;
 using Domain.Primitives;
 
 namespace Domain.ValueObjects;
@@ -10,17 +11,22 @@ public class Pagination : ValueObject
 
     public static Result<Pagination> Create(int resultsPerPage, int pageNumber)
     {
-        if(!ValidateValues(resultsPerPage, pageNumber))
+        if(resultsPerPage < 0 || pageNumber < 0)
         {
-            return Result<Pagination>.Failure(new ArgumentException());
+            return Result<Pagination>.Failure(PaginationErrors.NegativeValues);
+        }
+
+        if(resultsPerPage == 0)
+        {
+            return Result<Pagination>.Failure(PaginationErrors.ResultsPerPageIsZero);
+        }
+
+        if(resultsPerPage > 100)
+        {
+            return Result<Pagination>.Failure(PaginationErrors.ResultsPerPageCountLimitExceeded);
         }
 
         return new Pagination(resultsPerPage, pageNumber);
-    }
-
-    private static bool ValidateValues(int  resultsPerPage, int pageNumber)
-    {
-        return false;
     }
 
     private Pagination(int resultsPerPage, int pageNumber)

@@ -4,6 +4,7 @@ using Application.Abstractions.Invoker;
 using Application.Common;
 
 using Domain.Common;
+using Domain.Common.Errors;
 using Domain.Enum;
 
 namespace Web.HttpContextUser;
@@ -17,12 +18,12 @@ public sealed class HttpActionInvoker : ICommandQueryInvoker
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public Task<Result<InvokingUser>> GetInvokingUser(CancellationToken cancellationToken = default)
+    public Task<Result<InvokingUser>> GetInvokingUserAsync(CancellationToken cancellationToken = default)
     {
         Result<InvokingUser> result;
         if(_httpContextAccessor.HttpContext is null)
         {
-            result = Result<InvokingUser>.Failure(new Exception());
+            result = Result<InvokingUser>.Failure(InvokerErrors.InvokerNotFound);
             return Task.FromResult(result);
         }
 
@@ -32,7 +33,7 @@ public sealed class HttpActionInvoker : ICommandQueryInvoker
 
         if(userIdClaim is null || roleClaim is null)
         {
-            result = Result<InvokingUser>.Failure(new Exception());
+            result = Result<InvokingUser>.Failure(InvokerErrors.InvokerNotFound);
             return Task.FromResult(result);
         }
 

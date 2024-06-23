@@ -1,25 +1,30 @@
 ﻿using Application.Authentication.Abstractions.CQRS;
-using Application.Authentication.Abstractions.SessionManagement;
 using Application.Authentication.Commands;
 
+using Authentication.Abstractions.Services;
 using Authentication.Repositories;
+using Authentication.ValueObjects;
 
 using Domain.Common;
 
 namespace Application.Authentication.CommandHandlers;
 internal class LogoutCommandHandler : ICommandHandler<LogoutCommand>
 {
-    private readonly IAuthServiceRepository _authRepository;
-    private readonly ISessionManagement _sessionManager;
+    private readonly ISessionTokenStore _tokenStore;
 
-    public LogoutCommandHandler(ISessionManagement sessionManager, IAuthServiceRepository authRepository)
+    public LogoutCommandHandler(ISessionTokenStore tokenStore)
     {
-        _sessionManager = sessionManager;
-        _authRepository = authRepository;
+        _tokenStore = tokenStore;
     }
 
     public async Task<Result> HandleAsync(LogoutCommand command, CancellationToken cancellationToken = default)
     {
-        return await _sessionManager.RevokeSessionAsync(command.Token, cancellationToken);
+        var sessionTokenResult = SessionToken.CreateToken(command.Token);
+        if (!sessionTokenResult.IsSuccess)
+        {
+            return sessionTokenResult;
+        }
+
+        return await _tokenStore.RevokeTokenAsync(sessionTokenResult.Value, cancellationToken);
     }
 }

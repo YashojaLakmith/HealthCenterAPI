@@ -1,70 +1,70 @@
 ﻿using Application.Abstractions.CQRS;
 using Application.Doctor.Commands;
 
+using Domain.Abstractions.DomainServices;
 using Domain.Common;
-using Domain.Entities;
 using Domain.Repositories;
 using Domain.ValueObjects;
 
 namespace Application.Doctor.CommandHandlers;
 internal class CreateDoctorCommandHandler : ICommandHandler<CreateDoctorCommand>
 {
-    private readonly IDoctorRepository _doctorRepository;
+    private readonly ICreateUserService _createUserService;
     private readonly IUnitOfWork _unitOfWork;
 
-    public CreateDoctorCommandHandler(IDoctorRepository doctorRepository, IUnitOfWork unitOfWork)
+    public CreateDoctorCommandHandler(ICreateUserService createUserService, IUnitOfWork unitOfWork)
     {
-        _doctorRepository = doctorRepository;
+        _createUserService = createUserService;
         _unitOfWork = unitOfWork;
     }
 
     public async Task<Result> HandleAsync(CreateDoctorCommand command, CancellationToken cancellationToken = default)
     {
         var nameResult = Name.Create(command.DoctorName);
-        if (!nameResult.IsSuccess)
+        if (nameResult.IsFailure)
         {
             return nameResult;
         }
 
         var emailResult = EmailAddress.CreateEmailAddress(command.EmailAddress);
-        if (!emailResult.IsSuccess)
+        if (emailResult.IsFailure)
         {
             return emailResult;
         }
 
         var phoneNumberResult = PhoneNumber.CreatePhoneNumber(command.PhoneNumber);
-        if (!phoneNumberResult.IsSuccess)
+        if (phoneNumberResult.IsFailure)
         {
             return phoneNumberResult;
         }
 
         var regNumberResult = DoctorRegistrationNumber.Create(command.RegistrationNumber);
-        if (!regNumberResult.IsSuccess)
+        if (regNumberResult.IsFailure)
         {
             return regNumberResult;
         }
 
         var descriptionResult = Description.CreateDescription(command.Description);
-        if (!descriptionResult.IsSuccess)
+        if (descriptionResult.IsFailure)
         {
             return descriptionResult;
         }
 
-        var emailExistence = await _doctorRepository.IsEmailExistsAsync(emailResult.Value, cancellationToken);
-        if (emailExistence.Value)
+        var result = await _createUserService.CreateDoctorAsync(
+            nameResult.Value,
+            descriptionResult.Value,
+            command.Gender,
+            regNumberResult.Value,
+            emailResult.Value,
+            phoneNumberResult.Value,
+            cancellationToken
+            );
+
+        if (result.IsFailure)
         {
-            // Email already exists
+            return result;
         }
 
-        var registrationNumberExistence = await _doctorRepository.IsRegistrationNumberExistsAsync(regNumberResult.Value, cancellationToken);
-        if (registrationNumberExistence.Value)
-        {
-            // Reg no already exists.
-        }
-
-        var newDoctorResult = Domain.Entities.Doctor.Create(nameResult.Value, descriptionResult.Value, regNumberResult.Value, command.Gender);
-
-        await _doctorRepository.CreateNewAsync(newDoctorResult.Value, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success();

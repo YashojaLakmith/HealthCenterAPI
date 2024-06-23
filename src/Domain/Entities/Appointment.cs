@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.Common.Errors;
 using Domain.Enum;
 using Domain.Primitives;
 using Domain.ValueObjects;
@@ -12,28 +13,38 @@ public sealed class Appointment : Entity
     public Session Session { get; private set; }
     public Patient Patient { get; private set; }
 
-    private Appointment() : base() { }
-
-    private Appointment(Id id, AppointmentStatus status, Session session, Patient patient) : base(id)
+    private Appointment(Id id, AppointmentStatus status, DateTime appointmentCreatedOn, Session session, Patient patient) : base(id)
     {
         Status = status;
         Session = session;
         Patient = patient;
-        AppointmentCreatedOn = DateTime.UtcNow;
+        AppointmentCreatedOn = appointmentCreatedOn;
     }
 
-    public static Result<Appointment> Create(Session session, Patient patient)
+    public static Appointment Create(Session session, Patient patient)
     {
-        return new Appointment(Id.CreateId().Value, AppointmentStatus.Pending, session, patient);
+        return new Appointment(Id.CreateId(), AppointmentStatus.Pending, DateTime.UtcNow, session, patient);
     }
 
-    public void PatientArrived()
+    public Result PatientArrived()
     {
+        if(Status != AppointmentStatus.Pending)
+        {
+            return Result.Failure(AppointmentErrors.MarkingNonPendingAppointmentAsPatientArrived);
+        }
+
         Status = AppointmentStatus.PatientArrived;
+        return Result.Success();
     }
 
-    public void PatientServed()
+    public Result PatientServed()
     {
+        if(Status != AppointmentStatus.PatientArrived)
+        {
+            return Result.Failure(AppointmentErrors.MarkingNonArrivedPatientAsServed);
+        }
+
         Status = AppointmentStatus.PatientWasServed;
+        return Result.Success();
     }
 }

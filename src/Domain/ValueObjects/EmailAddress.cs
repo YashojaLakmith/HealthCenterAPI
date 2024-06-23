@@ -1,4 +1,7 @@
-﻿using Domain.Common;
+﻿using System.Text.RegularExpressions;
+
+using Domain.Common;
+using Domain.Common.Errors;
 using Domain.Primitives;
 
 namespace Domain.ValueObjects;
@@ -9,9 +12,14 @@ public sealed class EmailAddress : ValueObject
 
     public static Result<EmailAddress> CreateEmailAddress(string address)
     {
+        if(string.IsNullOrWhiteSpace(address) || address == string.Empty)
+        {
+            return Result<EmailAddress>.Failure(ChangeEmailErrors.EmptyEmailAddress);
+        }
+
         if (!ValidateEmailAddress(address))
         {
-            return Result<EmailAddress>.Failure(new ArgumentException());
+            return Result<EmailAddress>.Failure(ChangeEmailErrors.InvalidEmailAddress);
         }
 
         return new EmailAddress(address);
@@ -19,7 +27,17 @@ public sealed class EmailAddress : ValueObject
 
     private static bool ValidateEmailAddress(string email)
     {
-        return false;
+        const string pattern = @"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|""(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*"")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])";
+
+        var regex = new Regex(pattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
+        try
+        {
+            return regex.IsMatch(email);
+        }
+        catch (RegexMatchTimeoutException)
+        {
+            return false;
+        }
     }
 
     private EmailAddress(string email)
