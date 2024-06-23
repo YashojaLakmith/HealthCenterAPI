@@ -1,29 +1,44 @@
 ﻿using System.Security.Claims;
 
 using Authentication.Repositories;
-
+using DistributedRedisCache.Abstractions;
 using Domain.Common;
+using Domain.Repositories;
+using DistributedCacheEntryOptions = Microsoft.Extensions.Caching.Distributed.DistributedCacheEntryOptions;
 
 namespace DistributedRedisCache.SessionToken;
 internal sealed class SessionTokenStore : ISessionTokenStore
 {
-    public Task<Result> AddTokenAsync(Authentication.ValueObjects.SessionToken token, byte[] serializedClaims, CancellationToken cancellationToken = default)
+    private readonly IDistributedSessionCache _sessionCache;
+    private readonly DistributedCacheEntryOptions _options;
+
+    public SessionTokenStore(IDistributedSessionCache sessionCache, DistributedCacheEntryOptions cachingOptions)
     {
-        throw new NotImplementedException();
+        _sessionCache = sessionCache;
+        _options = cachingOptions;
     }
 
-    public Task<Result<IReadOnlyCollection<Claim>>> GetAssociatedClaimsAsync(Authentication.ValueObjects.SessionToken sessionToken, CancellationToken cancellationToken = default)
+    public async Task<Result> AddTokenAsync(Authentication.ValueObjects.SessionToken token, byte[] serializedClaims, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        await _sessionCache.SetAsync(token.Value, serializedClaims, _options, cancellationToken);
+        return Result.Success();
     }
 
-    public Task<Result> RefreshTokenAsync(Authentication.ValueObjects.SessionToken sessionToken, CancellationToken cancellationToken = default)
+    public async Task<Result<byte[]>> GetAssociatedClaimsAsync(Authentication.ValueObjects.SessionToken sessionToken, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var foundClaims = await _sessionCache.GetAsync(sessionToken.Value, cancellationToken);
+        return foundClaims ?? Result<byte[]>.Failure(RepositoryErrors.NotFoundError);
     }
 
-    public Task<Result> RevokeTokenAsync(Authentication.ValueObjects.SessionToken sessionToken, CancellationToken cancellationToken = default)
+    public async Task<Result> RefreshTokenAsync(Authentication.ValueObjects.SessionToken sessionToken, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        await _sessionCache.RefreshAsync(sessionToken.Value, cancellationToken);
+        return Result.Success();
+    }
+
+    public async Task<Result> RevokeTokenAsync(Authentication.ValueObjects.SessionToken sessionToken, CancellationToken cancellationToken = default)
+    {
+        await _sessionCache.RemoveAsync(sessionToken.Value, cancellationToken);
+        return Result.Success();
     }
 }

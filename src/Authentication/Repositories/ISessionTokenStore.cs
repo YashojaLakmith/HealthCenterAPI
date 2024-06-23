@@ -7,7 +7,7 @@ using Domain.Common;
 namespace Authentication.Repositories;
 public interface ISessionTokenStore
 {
-    Task<Result<IReadOnlyCollection<Claim>>> GetAssociatedClaimsAsync(SessionToken sessionToken, CancellationToken cancellationToken = default);
+    Task<Result<byte[]>> GetAssociatedClaimsAsync(SessionToken sessionToken, CancellationToken cancellationToken = default);
 
     Task<Result> AddTokenAsync(SessionToken token, byte[] serializedClaims, CancellationToken cancellationToken = default);
 

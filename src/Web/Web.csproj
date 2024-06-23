@@ -19,8 +19,10 @@
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\AzureKeyVaultSecrets\AzureKeyVaultSecrets.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\EventContacts\EventContacts.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\Presentation\Presentation.csproj" />
+    <ProjectReference Include="..\RedisCache\DistributedRedisCache.csproj" />
     <ProjectReference Include="..\Repositories\Repositories.csproj" />
   </ItemGroup>
 

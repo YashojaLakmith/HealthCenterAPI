@@ -1,6 +1,8 @@
 using Application;
 using Application.Authentication;
 using AzureKeyVaultSecrets;
+using DistributedRedisCache;
+using EventContacts;
 using Infrastructure;
 using Presentation;
 using Repositories;
@@ -26,6 +28,20 @@ public class Program
                 .AddPresentation()
                 .AddRepositories()
                 .AddAzureKeyVault()
+                .AddEvents()
+                .AddDistributedTokenStoring(resetTokenConfig =>
+                {
+                    resetTokenConfig.SlidingExpiration = TimeSpan.FromMinutes(15);
+                }, sessionTokenConfig =>
+                {
+                    sessionTokenConfig.SlidingExpiration = TimeSpan.FromMinutes(45);
+                }, resetCacheOptions =>
+                {
+                    
+                }, sessionCacheOptions =>
+                {
+                    
+                })
                 .AddHttpContextAccessor();
     }
 

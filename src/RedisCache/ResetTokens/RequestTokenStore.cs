@@ -6,7 +6,7 @@ using Authentication.ValueObjects;
 using DistributedRedisCache.Abstractions;
 
 using Domain.Common;
-
+using Domain.Repositories;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace DistributedRedisCache.ResetTokens;
@@ -15,18 +15,16 @@ internal sealed class RequestTokenStore : IResetTokenStore
     private readonly IDistributedResetTokenCache _requestTokenCache;
     private readonly DistributedCacheEntryOptions _cacheOptions;
 
-    public RequestTokenStore(IDistributedResetTokenCache requestTokenCache, Options options)
+    public RequestTokenStore(IDistributedResetTokenCache requestTokenCache, DistributedCacheEntryOptions options)
     {
         _requestTokenCache = requestTokenCache;
-        _cacheOptions = new()
-        {
-            SlidingExpiration = options.ResetTokenTimeout
-        };
+        _cacheOptions = options;
     }
 
-    public Task<Result<IReadOnlyCollection<Claim>>> GetTokenClaimsAsync(ResetToken resetToken, CancellationToken tokenCancellationToken = default)
+    public async Task<Result<byte[]>> GetTokenClaimsAsync(ResetToken resetToken, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var storedClaims = await _requestTokenCache.GetAsync(resetToken.Value, cancellationToken);
+        return storedClaims ?? Result<byte[]>.Failure(RepositoryErrors.NotFoundError);
     }
 
     public async Task RemoveTokenAsync(ResetToken resetToken, CancellationToken cancellationToken = default)
