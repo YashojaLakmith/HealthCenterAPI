@@ -47,4 +47,6 @@ public sealed class Appointment : Entity
         Status = AppointmentStatus.PatientWasServed;
         return Result.Success();
     }
+    
+    private Appointment(){}
 }

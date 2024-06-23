@@ -12,7 +12,7 @@ using Repositories.CustomQueries;
 using Repositories.Evaluators;
 
 namespace Repositories.RepositoryImplementations;
-internal class SessionRepository : ISessionRepository
+internal sealed class SessionRepository : ISessionRepository
 {
     private readonly IApplicationDbContext _dbContext;
 

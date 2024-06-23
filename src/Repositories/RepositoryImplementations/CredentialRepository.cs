@@ -10,7 +10,7 @@ using Infrastructure.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repositories.RepositoryImplementations;
-internal class CredentialRepository : ICredentialRepository
+internal sealed class CredentialRepository : ICredentialRepository
 {
     private readonly IApplicationDbContext _context;
 

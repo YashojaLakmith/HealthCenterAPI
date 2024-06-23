@@ -4,7 +4,7 @@ using Domain.Enum;
 using Domain.ValueObjects;
 
 namespace Domain.Services;
-public class CreateUserService : ICreateUserService
+internal sealed class CreateUserService : ICreateUserService
 {
     public Task<Result> CreatePatientAsync(Name PatientName,
         DateOfBirth BirthDate,

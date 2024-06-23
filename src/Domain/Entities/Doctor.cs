@@ -6,7 +6,7 @@ using Domain.ValueObjects;
 
 namespace Domain.Entities;
 
-public class Doctor : Entity
+public sealed class Doctor : Entity
 {
     private List<Session> _sessions = [];
 
@@ -103,4 +103,6 @@ public class Doctor : Entity
         PhoneNumber = phoneNumber;
         return Result.Success();
     }
+    
+    private Doctor(){}
 }

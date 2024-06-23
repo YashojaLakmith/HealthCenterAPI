@@ -6,7 +6,7 @@ using Domain.Repositories;
 using Domain.ValueObjects;
 
 namespace Domain.Services;
-public sealed class EmailChangeService : IEmailChangeService
+internal sealed class EmailChangeService : IEmailChangeService
 {
     private readonly IAdminRepository _adminRepository;
     private readonly IDoctorRepository _doctorRepository;

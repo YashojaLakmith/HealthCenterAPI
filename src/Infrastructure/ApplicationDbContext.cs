@@ -16,7 +16,7 @@ namespace Infrastructure;
 internal class ApplicationDbContext : DbContext, IUnitOfWork, IApplicationDbContext
 {
     private readonly IDbConnectionStringSource _connStringSource;
-    private readonly ILogger _logger;
+    private readonly ILogger<ApplicationDbContext> _logger;
 
     public DbSet<Patient> Patients { get; set; }
     public DbSet<Doctor> Doctors { get; set; }
@@ -25,9 +25,10 @@ internal class ApplicationDbContext : DbContext, IUnitOfWork, IApplicationDbCont
     public DbSet<Admin> Users { get; set; }
     public DbSet<Credentials> Credentials { get; set; }
 
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options,
+    public ApplicationDbContext(
+        DbContextOptions<ApplicationDbContext> options,
         IDbConnectionStringSource connectionStringSource,
-        ILogger logger) : base(options)
+        ILogger<ApplicationDbContext> logger ) : base(options)
     {
         _connStringSource = connectionStringSource;
         _logger = logger;
@@ -48,6 +49,7 @@ internal class ApplicationDbContext : DbContext, IUnitOfWork, IApplicationDbCont
         catch(Exception ex)
         {
             _logger.LogCritical("Error obtaining the database connection string: {@Exception}", ex);
+            throw;
         }
     }
 

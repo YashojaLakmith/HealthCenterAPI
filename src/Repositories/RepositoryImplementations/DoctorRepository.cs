@@ -8,7 +8,7 @@ using Infrastructure.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repositories.RepositoryImplementations;
-internal class DoctorRepository : IDoctorRepository
+internal sealed class DoctorRepository : IDoctorRepository
 {
     private readonly IApplicationDbContext _dbContext;
 

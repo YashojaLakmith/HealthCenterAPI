@@ -7,7 +7,7 @@ using Infrastructure.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repositories.RepositoryImplementations;
-internal class AdminRepository : IAdminRepository
+internal sealed class AdminRepository : IAdminRepository
 {
     private readonly IApplicationDbContext _dbContext;
 

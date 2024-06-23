@@ -4,7 +4,7 @@ using Domain.Primitives;
 using Domain.ValueObjects;
 
 namespace Domain.Entities;
-public class Admin : Entity
+public sealed class Admin : Entity
 {
     public Name AdminName { get; private set; }
     public EmailAddress EmailAddress { get; private set; }
@@ -47,4 +47,6 @@ public class Admin : Entity
         Role = newRole;
         return Result.Success();
     }
+    
+    private Admin(){}
 }

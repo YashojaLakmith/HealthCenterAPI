@@ -10,14 +10,9 @@ using Domain.ValueObjects;
 namespace Authentication.Entities;
 public sealed class Credentials : Entity
 {
-    public Admin Admin { get; }
+    public Admin Admin { get; private set; }
     public IReadOnlyCollection<byte> PasswordHash { get; private set; }
     public IReadOnlyCollection<byte> Salt {  get; private set; }   
-
-    public static Credentials CreateCredentials(Id credentialId, Admin user, IReadOnlyCollection<byte> passwordHash, IReadOnlyCollection<byte> salt)
-    {
-        return new Credentials(credentialId, user, passwordHash, salt);
-    }
 
     public static Credentials CreateCredentials(Admin admin)
     {
@@ -60,4 +55,6 @@ public sealed class Credentials : Entity
         
         return Result.Success();
     }
+    
+    private Credentials(){}
 }

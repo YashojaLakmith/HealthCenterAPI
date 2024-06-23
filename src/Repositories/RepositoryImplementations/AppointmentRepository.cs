@@ -12,7 +12,7 @@ using Repositories.CustomQueries;
 using Repositories.Evaluators;
 
 namespace Repositories.RepositoryImplementations;
-internal class AppointmentRepository : IAppointmentRepository
+internal sealed class AppointmentRepository : IAppointmentRepository
 {
     private readonly IApplicationDbContext _dbContext;
 

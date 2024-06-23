@@ -11,6 +11,11 @@ public abstract class Entity : IEquatable<Entity>
         Id = id;
     }
 
+    protected Entity()
+    {
+        Id = Id.CreateId();
+    }
+
     public bool Equals(Entity? other)
     {
         return other is Entity e && Id == e.Id;

@@ -6,12 +6,12 @@ using Domain.Common;
 using Domain.ValueObjects;
 
 namespace Authentication.Services;
-public class ResetTokenRequetService : IResetTokenRequetService
+internal sealed class ResetTokenRequestService : IResetTokenRequetService
 {
     private readonly IResetTokenStore _resetTokenStore;
     private readonly ICredentialRepository _credentialRespository;
 
-    public ResetTokenRequetService(IResetTokenStore resetTokenStore, ICredentialRepository credentialRespository)
+    public ResetTokenRequestService(IResetTokenStore resetTokenStore, ICredentialRepository credentialRespository)
     {
         _resetTokenStore = resetTokenStore;
         _credentialRespository = credentialRespository;

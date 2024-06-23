@@ -1,7 +1,9 @@
 using Application;
 using Application.Authentication;
+using Authentication;
 using AzureKeyVaultSecrets;
 using DistributedRedisCache;
+using Domain;
 using EventContacts;
 using Infrastructure;
 using Presentation;
@@ -9,7 +11,7 @@ using Repositories;
 
 namespace Web;
 
-public class Program
+public static class Program
 {
     public static async Task Main(string[] args)
     {
@@ -22,27 +24,33 @@ public class Program
 
     private static void ConfigureServices(IServiceCollection services, IWebHostEnvironment environment)
     {
-        services.AddApplication()
-                .AddInfrastructure()
-                .AddAdminAuthentication()
-                .AddPresentation()
-                .AddRepositories()
-                .AddAzureKeyVault()
-                .AddEvents()
-                .AddDistributedTokenStoring(resetTokenConfig =>
-                {
-                    resetTokenConfig.SlidingExpiration = TimeSpan.FromMinutes(15);
-                }, sessionTokenConfig =>
-                {
-                    sessionTokenConfig.SlidingExpiration = TimeSpan.FromMinutes(45);
-                }, resetCacheOptions =>
-                {
-                    
-                }, sessionCacheOptions =>
-                {
-                    
-                })
-                .AddHttpContextAccessor();
+        var presentationAssembly = typeof(PresentationAssembly).Assembly;
+        
+        services.AddDomain()
+            .AddApplication()
+            .AddInfrastructure()
+            .AddAuthenticationDomain()
+            .AddAdminAuthentication()
+            .AddRepositories()
+            .AddAzureKeyVault()
+            .AddEvents()
+            .AddPresentation()
+            .ConfigureLogging()
+            .ConfigureInvoker()
+            .ConfigureMassTransit()
+            .AddDistributedTokenStoring(resetTokenConfig =>
+            {
+                resetTokenConfig.SlidingExpiration = TimeSpan.FromMinutes(15);
+            }, sessionTokenConfig =>
+            {
+                sessionTokenConfig.SlidingExpiration = TimeSpan.FromMinutes(45);
+            }, resetCacheOptions =>
+            {
+
+            }, sessionCacheOptions =>
+            {
+
+            });
     }
 
     private static void ConfigureMiddleware(WebApplication app, IWebHostEnvironment environment)

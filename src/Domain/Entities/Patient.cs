@@ -6,7 +6,7 @@ using Domain.ValueObjects;
 
 namespace Domain.Entities;
 
-public class Patient : Entity
+public sealed class Patient : Entity
 {
     private List<Appointment> _appointments = [];
 
@@ -94,4 +94,6 @@ public class Patient : Entity
         _appointments.Remove(appointment);
         return Result.Success();
     }
+    
+    private Patient(){}
 }

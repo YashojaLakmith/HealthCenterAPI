@@ -5,50 +5,50 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations;
-internal class UserModelConfiguration : IEntityTypeConfiguration<Admin>
+internal class AdminModelConfiguration : IEntityTypeConfiguration<Admin>
 {
     public void Configure(EntityTypeBuilder<Admin> builder)
     {
-        builder.Property(user => user.CreatedOn)
+        builder.Property(admin => admin.CreatedOn)
             .IsRequired(true);
 
-        builder.Property(user => user.EmailAddress)
+        builder.Property(admin => admin.EmailAddress)
             .IsRequired(true)
             .HasConversion(
                 value => value.Value,
                 value => EmailAddress.CreateEmailAddress(value).Value)
             .HasColumnType(@"NVARCHAR(256)");
 
-        builder.Property(user => user.Gender)
+        builder.Property(admin => admin.Gender)
             .IsRequired(true);
 
-        builder.Property(user => user.Id)
+        builder.Property(admin => admin.Id)
             .IsRequired(true)
             .HasConversion(
                 value => value.Value,
                 value => Id.CreateId(value).Value);
 
-        builder.Property(user => user.NIC)
+        builder.Property(admin => admin.NIC)
             .IsRequired(true)
             .HasConversion(
                 value => value.Value,
                 value => NIC.Create(value).Value)
             .HasColumnType(@"VARCHAR(12)");
 
-        builder.Property(user => user.PhoneNumber)
+        builder.Property(admin => admin.PhoneNumber)
             .IsRequired(true)
             .HasConversion(
                 value => value.Value,
                 value => PhoneNumber.CreatePhoneNumber(value).Value)
             .HasColumnType(@"VARCHAR(10)");
 
-        builder.Property(user => user.Role)
+        builder.Property(admin => admin.Role)
             .IsRequired(true);
 
-        builder.HasKey(user => user.Id)
+        builder.HasKey(admin => admin.Id)
             .IsClustered(false);
 
-        builder.HasIndex(user => user.EmailAddress)
+        builder.HasIndex(admin => admin.EmailAddress)
             .IsClustered(false)
             .IsUnique(true);
     }
