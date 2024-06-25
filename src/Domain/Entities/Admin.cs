@@ -14,7 +14,7 @@ public sealed class Admin : Entity
     public Gender Gender { get; private set; }
     public DateTime CreatedOn { get; private set; }
 
-    public static Admin CreateUser(Name userName, EmailAddress email, PhoneNumber phoneNumber, NIC nic, Role role, Gender gender)
+    public static Admin CreateAdmin(Name userName, EmailAddress email, PhoneNumber phoneNumber, NIC nic, Role role, Gender gender)
     {
         return new Admin(Id.CreateId(), userName, email, phoneNumber, nic, role, gender, DateTime.UtcNow);
     }

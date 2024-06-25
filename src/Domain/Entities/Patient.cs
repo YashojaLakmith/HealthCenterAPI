@@ -17,7 +17,11 @@ public sealed class Patient : Entity
     public Gender Gender { get; private set; }
     public (int years, int months) Age => CalculateAge();
 
-    public IReadOnlyCollection<Appointment> Appointments => _appointments;
+    public IReadOnlyCollection<Appointment> Appointments
+    {
+        get => _appointments;
+        private init => _appointments = value.ToList();
+    }
 
     private (int years, int months) CalculateAge()
     {

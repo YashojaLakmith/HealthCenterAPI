@@ -5,9 +5,9 @@ using Authentication.Entities;
 using Domain.Common;
 using Domain.Entities;
 using Domain.Repositories;
-
+using Domain.ValueObjects;
 using Infrastructure.Abstractions;
-
+using Infrastructure.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -22,7 +22,7 @@ internal class ApplicationDbContext : DbContext, IUnitOfWork, IApplicationDbCont
     public DbSet<Doctor> Doctors { get; set; }
     public DbSet<Appointment> Appointments { get; set; }
     public DbSet<Session> Sessions { get; set; }
-    public DbSet<Admin> Users { get; set; }
+    public DbSet<Admin> Admins { get; set; }
     public DbSet<Credentials> Credentials { get; set; }
 
     public ApplicationDbContext(
@@ -36,7 +36,15 @@ internal class ApplicationDbContext : DbContext, IUnitOfWork, IApplicationDbCont
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(Infrastructure.DependencyInjection).Assembly);
+        try
+        {
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(Infrastructure.DependencyInjection).Assembly);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogCritical(@"And error occured while applying configurations. Error: {@Exception}", ex);
+            Environment.Exit(1);
+        }
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -44,7 +52,10 @@ internal class ApplicationDbContext : DbContext, IUnitOfWork, IApplicationDbCont
         try
         {
             var connString = _connStringSource.GetConnectionString();
-            optionsBuilder.UseSqlServer(connString);
+            optionsBuilder.UseSqlServer(connString, b =>
+            {
+                b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
+            });
         }
         catch(Exception ex)
         {

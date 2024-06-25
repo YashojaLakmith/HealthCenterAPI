@@ -27,17 +27,27 @@ public static class DependencyInjection
 
     public static IServiceCollection ConfigureInvoker(this IServiceCollection services)
     {
-        return services.AddScoped<ICommandQueryInvoker, HttpActionInvoker>();
+        return services
+            .AddHttpContextAccessor()
+            .AddScoped<ICommandQueryInvoker, HttpActionInvoker>();
     }
 
-    public static IServiceCollection ConfigureMassTransit(this IServiceCollection services)
+    public static IServiceCollection ConfigureMassTransit(this IServiceCollection services, IConfiguration configuration)
     {
         return services.AddMassTransit(busRegister =>
         {
+            
+            busRegister.SetKebabCaseEndpointNameFormatter();
             busRegister.AddConsumer<AdminCreatedEventConsumer>();
 
             busRegister.UsingRabbitMq((context, config) =>
             {
+                config.Host(new Uri(configuration[@"RabbitMQ:Host"]!), options =>
+                {
+                    options.Username(configuration[@"RabbitMQ:Username"]!);
+                    options.Password(configuration[@"RabbitMQ:Password"]!);
+                });
+                
                 config.ConfigureEndpoints(context);
             });
         });

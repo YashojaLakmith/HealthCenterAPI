@@ -17,7 +17,11 @@ public sealed class Doctor : Entity
     public PhoneNumber PhoneNumber { get; private set; }
     public Gender Gender { get; private set; }
 
-    public IReadOnlyCollection<Session> Sessions => _sessions;
+    public IReadOnlyCollection<Session> Sessions
+    {
+        get => _sessions;
+        private init => _sessions = value.ToList();
+    }
 
     public static Result<Doctor> Create(
         Name name,

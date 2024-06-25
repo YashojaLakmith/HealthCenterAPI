@@ -10,9 +10,22 @@ using Domain.ValueObjects;
 namespace Authentication.Entities;
 public sealed class Credentials : Entity
 {
-    public Admin Admin { get; private set; }
-    public IReadOnlyCollection<byte> PasswordHash { get; private set; }
-    public IReadOnlyCollection<byte> Salt {  get; private set; }   
+    private byte[] _passwordHash;
+    private byte[] _salt;
+    
+    public Admin Admin { get; private init; }
+
+    public IEnumerable<byte> PasswordHash
+    {
+        get => _passwordHash;
+        private init => _passwordHash = value.ToArray();
+    }
+
+    public IEnumerable<byte> Salt
+    {
+        get => _salt;
+        private init => _salt = value.ToArray();
+    }   
 
     public static Credentials CreateCredentials(Admin admin)
     {
@@ -50,8 +63,8 @@ public sealed class Credentials : Entity
     public Result ChangePassword(Password newPassword)
     {
         var newSalt = PasswordDerivation.DeriveNewSalt();
-        PasswordHash = PasswordDerivation.DerivePassword(newPassword.Value, newSalt);
-        Salt = newSalt;
+        _passwordHash = PasswordDerivation.DerivePassword(newPassword.Value, newSalt);
+        _salt = newSalt;
         
         return Result.Success();
     }

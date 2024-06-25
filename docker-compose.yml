@@ -1,9 +1,38 @@
+version: '3.8'
+
 services:
     api:
-        image: blah
+        container_name: WebAPI
+        build:
+            context: .
+            dockerfile: src/Web/Dockerfile
+        environment:
+            -   RabbitMQ__Host=amqp://api-eventbus:5672
+            -   RabbitMQ__Username=guest
+            -   RabbitMQ__Password=guest
+            -   Redis__Host=redis:6379
+        ports:
+            -   5000:8080
+            -   5001:8081
+        depends_on:
+            -   redis
+            -   rabbitmq
 
     redis:
         image: redis
+        container_name: dist-cache
+        expose:
+            -   6379
         
     rabbitmq:
         image: rabbitmq
+        container_name: HealthCenterAPI.EventBus
+        hostname: api-eventbus
+        volumes:
+            -   ./.containers/bus/data/:var/lib/rabbitmq
+            -   ./.containers/bus/log:var/log/rabbitmq
+        environment:
+            RABBITMQ_DEFAULT_USER: guest
+            RABBITMQ_DEFAULT_PW: guest
+        expose:
+            -   5672

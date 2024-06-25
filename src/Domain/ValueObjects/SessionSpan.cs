@@ -34,10 +34,10 @@ public class SessionSpan : ValueObject
         return new SessionSpan(sessionStart, sessionEnd);
     }
 
-    private SessionSpan(DateTime sessionStart, DateTime sessionEnd)
+    private SessionSpan(DateTime sessionStartValue, DateTime sessionEndValue)
     {
-        SessionStartValue = sessionStart;
-        SessionEndValue = sessionEnd;
+        SessionStartValue = sessionStartValue;
+        SessionEndValue = sessionEndValue;
     }
 
     public override IEnumerable<object> GetAtomicValues()

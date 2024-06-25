@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations;
-internal class AdminModelConfiguration : IEntityTypeConfiguration<Admin>
+internal sealed class AdminModelConfiguration : IEntityTypeConfiguration<Admin>
 {
     public void Configure(EntityTypeBuilder<Admin> builder)
     {
@@ -41,6 +41,13 @@ internal class AdminModelConfiguration : IEntityTypeConfiguration<Admin>
                 value => value.Value,
                 value => PhoneNumber.CreatePhoneNumber(value).Value)
             .HasColumnType(@"VARCHAR(10)");
+
+        builder.Property(admin => admin.AdminName)
+            .IsRequired(true)
+            .HasConversion(
+                value => value.Value,
+                value => Name.Create(value).Value)
+            .HasColumnType(@"NVARCHAR(100)");
 
         builder.Property(admin => admin.Role)
             .IsRequired(true);

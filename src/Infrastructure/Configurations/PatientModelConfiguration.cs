@@ -6,15 +6,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations;
 
-internal class PatientModelConfiguration : IEntityTypeConfiguration<Patient>
+internal sealed class PatientModelConfiguration : IEntityTypeConfiguration<Patient>
 {
     public void Configure(EntityTypeBuilder<Patient> builder)
     {
-        builder.Ignore(patient => patient.Age);
-
-        builder.Property(patient => patient.Appointments)
-            .HasField(@"_appointments");
-
         builder.Property(patient => patient.DateOfBirth)
             .IsRequired(true);
 
@@ -48,11 +43,21 @@ internal class PatientModelConfiguration : IEntityTypeConfiguration<Patient>
                 value => PhoneNumber.CreatePhoneNumber(value).Value)
             .HasColumnType(@"NVARCHAR(10)");
 
+        builder.Property(patient => patient.DateOfBirth)
+            .IsRequired(true)
+            .HasConversion(
+                value => value.Value,
+                value => DateOfBirth.Create(value).Value);
+
         builder.HasKey(patient => patient.Id)
             .IsClustered(false);
 
         builder.HasIndex(patient => patient.EmailAddress)
             .IsClustered(false)
+            .IsUnique(true);
+
+        builder.HasIndex(patient => patient.PhoneNumber)
+            .IsClustered(true)
             .IsUnique(true);
     }
 }

@@ -36,12 +36,7 @@ internal sealed class CredentialRepository : ICredentialRepository
                                     .Where(cred => cred.Admin.Id == userId)
                                     .FirstOrDefaultAsync(cancellationToken);
 
-        if (result is null)
-        {
-            return Result<Credentials>.Failure(RepositoryErrors.NotFoundError);
-        }
-
-        return result;
+        return result ?? Result<Credentials>.Failure(RepositoryErrors.NotFoundError);
     }
 
     public async Task<Result> InsertNewAsync(Credentials credentials, CancellationToken cancellationToken = default)
