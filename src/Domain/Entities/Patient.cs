@@ -10,10 +10,11 @@ public sealed class Patient : Entity
 {
     private List<Appointment> _appointments = [];
 
-    public Name PatientName { get; private set; }
+    public Name PatientName { get; private init; }
     public PhoneNumber PhoneNumber { get; private set; }
     public EmailAddress EmailAddress { get; private set; }
-    public DateOfBirth DateOfBirth { get; private set; }
+    public DateOfBirth DateOfBirth { get; private init; }
+    public NIC NIC { get; private init; }
     public Gender Gender { get; private set; }
     public (int years, int months) Age => CalculateAge();
 
@@ -35,15 +36,16 @@ public sealed class Patient : Entity
         return (diff / 12, diff % 12);
     }
 
-    public static Result<Patient> CreatePatient(Name name, PhoneNumber phoneNumber, EmailAddress emailAddress, DateOfBirth dateOfBirth, Gender gender)
+    public static Result<Patient> CreatePatient(Name name, PhoneNumber phoneNumber, NIC nic, EmailAddress emailAddress, DateOfBirth dateOfBirth, Gender gender)
     {
-        return new Patient(Id.CreateId(), [], name, phoneNumber, emailAddress, dateOfBirth, gender);
+        return new Patient(Id.CreateId(), [], name, phoneNumber, nic, emailAddress, dateOfBirth, gender);
     }
 
     private Patient(Id id,
         IEnumerable<Appointment> appointments,
         Name patientName,
         PhoneNumber phoneNumber,
+        NIC nic,
         EmailAddress emailAddress,
         DateOfBirth dateOfBirth,
         Gender gender) : base(id)
@@ -51,6 +53,7 @@ public sealed class Patient : Entity
         _appointments = [..appointments];
         PatientName = patientName;
         PhoneNumber = phoneNumber;
+        NIC = nic;
         EmailAddress = emailAddress;
         DateOfBirth = dateOfBirth;
         Gender = gender;

@@ -36,6 +36,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DistributedRedisCache", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventContacts", "src\EventContacts\EventContacts.csproj", "{B061ADDC-0288-482F-A251-361CE5B682DE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadOnlyRepositories", "src\ReadOnlyRepositories\ReadOnlyRepositories.csproj", "{94F0FE18-B71A-4A26-9E58-F705C9997F01}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -86,6 +88,10 @@ Global
 		{B061ADDC-0288-482F-A251-361CE5B682DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B061ADDC-0288-482F-A251-361CE5B682DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B061ADDC-0288-482F-A251-361CE5B682DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94F0FE18-B71A-4A26-9E58-F705C9997F01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94F0FE18-B71A-4A26-9E58-F705C9997F01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94F0FE18-B71A-4A26-9E58-F705C9997F01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94F0FE18-B71A-4A26-9E58-F705C9997F01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,6 +108,7 @@ Global
 		{47719C4A-A780-4414-8941-8B515955F84B} = {C27EB3B7-1168-4257-BA5C-1EF5A5B64B8A}
 		{9FA33B93-DA88-4529-BE8D-296422BD4AC1} = {C27EB3B7-1168-4257-BA5C-1EF5A5B64B8A}
 		{B061ADDC-0288-482F-A251-361CE5B682DE} = {C27EB3B7-1168-4257-BA5C-1EF5A5B64B8A}
+		{94F0FE18-B71A-4A26-9E58-F705C9997F01} = {C27EB3B7-1168-4257-BA5C-1EF5A5B64B8A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CA5C4D54-8618-4BE1-A0BB-45923A2A2414}

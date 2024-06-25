@@ -28,6 +28,7 @@
     <ProjectReference Include="..\EventContacts\EventContacts.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\Presentation\Presentation.csproj" />
+    <ProjectReference Include="..\ReadOnlyRepositories\ReadOnlyRepositories.csproj" />
     <ProjectReference Include="..\RedisCache\DistributedRedisCache.csproj" />
     <ProjectReference Include="..\Repositories\Repositories.csproj" />
   </ItemGroup>
