@@ -4,7 +4,7 @@ using EventContacts.Contracts;
 using MassTransit;
 
 namespace EventContacts;
-internal sealed class AdminCreatedEventPublisher : IAdminCreatedEventPublisher
+public sealed class AdminCreatedEventPublisher : IAdminCreatedEventPublisher
 {
     private readonly IPublishEndpoint _publishEndpoint;
 

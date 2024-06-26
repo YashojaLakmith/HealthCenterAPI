@@ -1,35 +1,35 @@
 ﻿using Authentication.Entities;
-
+using Domain.Entities;
+using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations;
-internal class CredentialModelConfiguration : IEntityTypeConfiguration<Credentials>
+internal sealed class CredentialModelConfiguration : IEntityTypeConfiguration<Credentials>
 {
     public void Configure(EntityTypeBuilder<Credentials> builder)
     {
-        builder.Ignore(cred => cred.Id);
-
-        builder.Property(cred => cred.Admin)
-            .IsRequired(true);
+        builder.Property(cred => cred.Id)
+            .HasConversion(
+                value => value.Value,
+                value => Id.CreateId(value).Value);
 
         builder.Property(cred => cred.PasswordHash)
             .IsRequired(true)
-            .HasMaxLength(128);
+            .HasMaxLength(256);
 
         builder.Property(cred => cred.Salt)
             .IsRequired(true)
-            .HasMaxLength(128);
+            .HasMaxLength(256);
 
-        builder.HasNoKey();
+        builder.HasKey(cred => cred.Id)
+            .IsClustered(false);
 
-        builder.HasOne(cred => cred.Admin)
+        builder
+            .HasOne(cred => cred.Admin)
             .WithOne()
-            .HasForeignKey<Credentials>(cred => cred.Admin)
+            .HasForeignKey<Credentials>(cred => cred.Id)
+            .IsRequired(true)
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasIndex(cred => cred.Admin)
-            .IsClustered(false)
-            .IsUnique(true);
     }
 }

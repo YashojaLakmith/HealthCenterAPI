@@ -4,11 +4,16 @@ namespace Domain.Primitives;
 
 public abstract class Entity : IEquatable<Entity>
 {
-    public Id Id { get; private init; }
+    public Id Id { get; private set; }
 
     protected Entity(Id id)
     {
         Id = id;
+    }
+
+    protected Entity()
+    {
+        Id = Id.CreateId();
     }
 
     public bool Equals(Entity? other)

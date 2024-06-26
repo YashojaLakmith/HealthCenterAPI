@@ -11,16 +11,13 @@ namespace Application.Appointment.CommandHandlers;
 internal class CancelAppointmentCommandHandler : ICommandHandler<IdCommand>
 {
     private readonly IAppointmentRepository _appointmentRepository;
-    private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
 
     public CancelAppointmentCommandHandler(
         IAppointmentRepository appointmentRepository,
-        IUnitOfWork unitOfWork,
-        ILogger logger)
+        IUnitOfWork unitOfWork)
     {
         _appointmentRepository = appointmentRepository;
-        _logger = logger;
         _unitOfWork = unitOfWork;
     }
 

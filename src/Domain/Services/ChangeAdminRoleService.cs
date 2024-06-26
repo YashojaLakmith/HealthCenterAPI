@@ -7,7 +7,7 @@ using Domain.Repositories;
 using Domain.ValueObjects;
 
 namespace Domain.Services;
-public class ChangeAdminRoleService : IChangeAdminRoleService
+internal sealed class ChangeAdminRoleService : IChangeAdminRoleService
 {
     private readonly IAdminRepository _adminRepository;
 

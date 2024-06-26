@@ -6,7 +6,7 @@ using Domain.ValueObjects;
 
 namespace Domain.Entities;
 
-public class Patient : Entity
+public sealed class Patient : Entity
 {
     private List<Appointment> _appointments = [];
 
@@ -17,7 +17,11 @@ public class Patient : Entity
     public Gender Gender { get; private set; }
     public (int years, int months) Age => CalculateAge();
 
-    public IReadOnlyCollection<Appointment> Appointments => _appointments;
+    public IReadOnlyCollection<Appointment> Appointments
+    {
+        get => _appointments;
+        private init => _appointments = value.ToList();
+    }
 
     private (int years, int months) CalculateAge()
     {
@@ -94,4 +98,6 @@ public class Patient : Entity
         _appointments.Remove(appointment);
         return Result.Success();
     }
+    
+    private Patient(){}
 }

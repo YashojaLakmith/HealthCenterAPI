@@ -6,7 +6,7 @@ using Domain.ValueObjects;
 
 namespace Domain.Services;
 
-public class DeleteAdminService : IDeleteAdminService
+internal sealed class DeleteAdminService : IDeleteAdminService
 {
     private readonly IAdminRepository _adminRepository;
 

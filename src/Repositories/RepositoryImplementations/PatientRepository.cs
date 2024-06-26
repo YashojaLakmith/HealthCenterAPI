@@ -6,7 +6,7 @@ using Infrastructure.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repositories.RepositoryImplementations;
-internal class PatientRepository : IPatientRepository
+internal sealed class PatientRepository : IPatientRepository
 {
     private readonly IApplicationDbContext _dbContext;
 

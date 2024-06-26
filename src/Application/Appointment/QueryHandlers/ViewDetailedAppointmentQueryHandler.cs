@@ -13,11 +13,9 @@ namespace Application.Appointment.QueryHandlers;
 internal class ViewDetailedAppointmentQueryHandler : IQueryHandler<AppointmentDetailView, IdQuery>
 {
     private readonly IAppointmentRepository _appointmentRepository;
-    private readonly ILogger _logger;
 
-    public ViewDetailedAppointmentQueryHandler(ILogger logger, IAppointmentRepository appointmentRepository)
+    public ViewDetailedAppointmentQueryHandler(IAppointmentRepository appointmentRepository)
     {
-        _logger = logger;
         _appointmentRepository = appointmentRepository;
     }
 

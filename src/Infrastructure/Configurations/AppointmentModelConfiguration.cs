@@ -6,10 +6,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations;
 
-internal class AppointmentModelConfiguration : IEntityTypeConfiguration<Appointment>
+internal sealed class AppointmentModelConfiguration : IEntityTypeConfiguration<Appointment>
 {
     public void Configure(EntityTypeBuilder<Appointment> builder)
     {
+        builder.Ignore(a => a.Patient);
+        
         builder.Property(a => a.Id)
             .IsRequired(true)
             .HasConversion(
@@ -28,6 +30,7 @@ internal class AppointmentModelConfiguration : IEntityTypeConfiguration<Appointm
         builder.HasOne(a => a.Patient)
             .WithMany(p => p.Appointments)
             .HasForeignKey(@"PatientId")
+            .IsRequired(true)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

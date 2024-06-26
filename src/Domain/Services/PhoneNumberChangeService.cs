@@ -6,7 +6,7 @@ using Domain.Repositories;
 using Domain.ValueObjects;
 
 namespace Domain.Services;
-public class PhoneNumberChangeService : IPhoneNumberChangeService
+internal sealed class PhoneNumberChangeService : IPhoneNumberChangeService
 {
     private readonly IPatientRepository _patientRepository;
     private readonly IDoctorRepository _doctorRepository;

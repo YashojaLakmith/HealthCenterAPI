@@ -9,8 +9,9 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
-        return services.AddDbContext<ApplicationDbContext>()
-                        .AddScoped<IApplicationDbContext, ApplicationDbContext>()
-                        .AddScoped<IUnitOfWork, ApplicationDbContext>();
+        return services
+            .AddDbContext<ApplicationDbContext>()
+            .AddScoped<IApplicationDbContext, ApplicationDbContext>()
+            .AddScoped<IUnitOfWork, ApplicationDbContext>();
     }
 }

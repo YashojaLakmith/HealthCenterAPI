@@ -5,7 +5,7 @@ using Domain.ValueObjects;
 
 namespace Domain.Entities;
 
-public class Session : Entity
+public sealed class Session : Entity
 {
     public SessionSpan SessionSpan { get; private set; }
     public Doctor Doctor { get; private set; }
@@ -33,4 +33,6 @@ public class Session : Entity
         SessionSpan = sessionSpan;
         return Result.Success();
     }
+    
+    private Session(){}
 }

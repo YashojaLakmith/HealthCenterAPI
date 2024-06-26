@@ -12,7 +12,7 @@ using EventContacts.Contracts;
 using MassTransit;
 
 namespace EventContacts;
-internal sealed class AdminCreatedEventConsumer : IAdminCreatedEventConsumer, IConsumer<AdminCreatedEvent>
+public sealed class AdminCreatedEventConsumer : IAdminCreatedEventConsumer, IConsumer<AdminCreatedEvent>
 {
     private readonly IAdminRepository _adminRepository;
     private readonly ICredentialRepository _credentialRepository;

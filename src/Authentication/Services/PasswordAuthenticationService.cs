@@ -1,50 +1,44 @@
-﻿using System.Security.Claims;
-
-using Authentication.Abstractions.Services;
-using Authentication.Entities;
+﻿using Authentication.Abstractions.Services;
 using Authentication.Errors;
 using Authentication.Repositories;
 using Authentication.ValueObjects;
-
 using Domain.Common;
 using Domain.ValueObjects;
 
 namespace Authentication.Services;
-public sealed class PasswordAuthenticationService : IPasswordAuthenticationService
-{
-    private readonly ISessionTokenStore _sessionStore;
-    private readonly ICredentialRepository _credRepository;
 
-    public PasswordAuthenticationService(ISessionTokenStore sessionStore, ICredentialRepository credRepository)
+public class PasswordAuthenticationService : IPasswordAuthenticationService
+{
+    private readonly ICredentialRepository _credentialRepository;
+    private readonly ISessionTokenStore _sessionTokenStore;
+
+    public PasswordAuthenticationService(ICredentialRepository credentialRepository, ISessionTokenStore sessionTokenStore)
     {
-        _sessionStore = sessionStore;
-        _credRepository = credRepository;
+        _credentialRepository = credentialRepository;
+        _sessionTokenStore = sessionTokenStore;
     }
 
-    public async Task<Result<SessionToken>> AuthenticateWithPasswordAsync(EmailAddress emailAddress, Password password, CancellationToken cancellationToken = default)
+    public async Task<Result<SessionToken>> AuthenticateWithPasswordAsync(
+        EmailAddress emailAddress,
+        Password password,
+        CancellationToken cancellationToken = default)
     {
-        var credentialResult = await _credRepository.GetCredentialObjectByEmailAsync(emailAddress, cancellationToken);
-        if (credentialResult.IsFailure)
+        var credObjectResult = await _credentialRepository.GetCredentialObjectByEmailAsync(emailAddress, cancellationToken);
+        if (credObjectResult.IsFailure)
         {
-            return Result<SessionToken>.Failure(credentialResult.Error);
+            return Result<SessionToken>.Failure(credObjectResult.Error);
         }
 
-        if (!credentialResult.Value.CanAuthenticateWithPassword(password))
+        if (!credObjectResult.Value.CanAuthenticateWithPassword(password))
         {
             return Result<SessionToken>.Failure(AuthenticationErrors.PasswordAuthenticationFailedError);
         }
 
-        var newToken = SessionToken.CreateToken();
-        var claims = ClaimExtractor.ExtractClaims(credentialResult.Value);
+        var claims = ClaimExtractor.ExtractClaims(credObjectResult.Value);
         var serializedClaims = await ClaimSerializer.SerializeClaimsAsync(claims, cancellationToken);
+        var token = SessionToken.CreateToken();
+        var newSessionResult = await _sessionTokenStore.AddTokenAsync(token, serializedClaims, cancellationToken);
 
-        var insertResult = await _sessionStore.AddTokenAsync(newToken, serializedClaims, cancellationToken);
-        if (insertResult.IsFailure)
-        {
-            return Result<SessionToken>.Failure(insertResult.Error);
-        }
-
-        return newToken;
+        return newSessionResult.IsFailure ? Result<SessionToken>.Failure(newSessionResult.Error) : token;
     }
-
 }

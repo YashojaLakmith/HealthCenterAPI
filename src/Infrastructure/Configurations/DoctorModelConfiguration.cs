@@ -6,13 +6,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations;
 
-internal class DoctorModelConfiguration : IEntityTypeConfiguration<Doctor>
+internal sealed class DoctorModelConfiguration : IEntityTypeConfiguration<Doctor>
 {
     public void Configure(EntityTypeBuilder<Doctor> builder)
     {
-        builder.Property(doc => doc.Sessions)
-            .HasField(@"_sessions");
-
         builder.Property(doc => doc.Id)
             .IsRequired(true)
             .HasConversion(
@@ -21,10 +18,16 @@ internal class DoctorModelConfiguration : IEntityTypeConfiguration<Doctor>
 
         builder.Property(doc => doc.DoctorDescription)
             .IsRequired(true)
+            .HasConversion(
+                value => value.Value,
+                value => Description.CreateDescription(value).Value)
             .HasColumnType(@"NVARCHAR(500)");
 
         builder.Property(doc => doc.DoctorName)
             .IsRequired(true)
+            .HasConversion(
+                value => value.Value,
+                value => Name.Create(value).Value)
             .HasColumnType(@"NVARCHAR(100)");
 
         builder.Property(doc => doc.Gender)
@@ -32,10 +35,16 @@ internal class DoctorModelConfiguration : IEntityTypeConfiguration<Doctor>
 
         builder.Property(doc => doc.RegistrationNumber)
             .IsRequired(true)
+            .HasConversion(
+                value => value.Value,
+                value => DoctorRegistrationNumber.Create(value).Value)
             .HasColumnType(@"NVARCHAR(15)");
 
         builder.Property(doc => doc.PhoneNumber)
             .IsRequired(true)
+            .HasConversion(
+                value => value.Value,
+                value => PhoneNumber.CreatePhoneNumber(value).Value)
             .HasColumnType(@"VARCHAR(10)");
 
         builder.Property(doc => doc.DoctorEmailAddress)
@@ -55,6 +64,5 @@ internal class DoctorModelConfiguration : IEntityTypeConfiguration<Doctor>
         builder.HasIndex(doc => doc.DoctorEmailAddress)
             .IsUnique(true)
             .IsClustered(false);
-
     }
 }

@@ -4,7 +4,7 @@ using Domain.Primitives;
 using Domain.ValueObjects;
 
 namespace Domain.Entities;
-public class Admin : Entity
+public sealed class Admin : Entity
 {
     public Name AdminName { get; private set; }
     public EmailAddress EmailAddress { get; private set; }
@@ -14,7 +14,7 @@ public class Admin : Entity
     public Gender Gender { get; private set; }
     public DateTime CreatedOn { get; private set; }
 
-    public static Admin CreateUser(Name userName, EmailAddress email, PhoneNumber phoneNumber, NIC nic, Role role, Gender gender)
+    public static Admin CreateAdmin(Name userName, EmailAddress email, PhoneNumber phoneNumber, NIC nic, Role role, Gender gender)
     {
         return new Admin(Id.CreateId(), userName, email, phoneNumber, nic, role, gender, DateTime.UtcNow);
     }
@@ -47,4 +47,6 @@ public class Admin : Entity
         Role = newRole;
         return Result.Success();
     }
+    
+    private Admin(){}
 }

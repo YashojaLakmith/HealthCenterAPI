@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations;
 
-internal class SessionModelConfiguration : IEntityTypeConfiguration<Session>
+internal sealed class SessionModelConfiguration : IEntityTypeConfiguration<Session>
 {
     public void Configure(EntityTypeBuilder<Session> builder)
     {
@@ -19,10 +19,10 @@ internal class SessionModelConfiguration : IEntityTypeConfiguration<Session>
         builder.OwnsOne(session => session.SessionSpan, span =>
         {
             span.Property(ss => ss.SessionStartValue)
-                .HasColumnName(@"SessionStart")
+                .HasColumnName(@"sessionStart")
                 .IsRequired(true);
             span.Property(ss => ss.SessionEndValue)
-                .HasColumnName(@"SessionEnd")
+                .HasColumnName(@"sessionEnd")
                 .IsRequired(true);
         });
 
