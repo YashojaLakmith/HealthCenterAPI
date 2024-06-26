@@ -18,9 +18,18 @@ public static class DependencyInjection
     {
         return services
             .AddScoped<IAdminCommandHandlerFactory, AdminCommandHandlerFactoryImpl>()
+            .AddScoped<IAdminQueryHandlerFactory, AdminQueryHandlerFactoryImpl>()
+            
             .AddScoped<IAppointmentCommandHandlerFactory, AppointmentCommandHandlerFactoryImpl>()
+            .AddScoped<IAppointmentQueryHandlerFactory, AppointmentQueryHandlersFactoryImpl>()
+            
             .AddScoped<IDoctorCommandHandlerFactory, DoctorCommandHandlerFactoryImpl>()
+            .AddScoped<IDoctorQueryHandlerFactory, DoctorQueryHandlerFactoryImpl>()
+            
             .AddScoped<IPatientCommandHandlerFactory, PatientCommandHandlerFactoryImpl>()
-            .AddScoped<ISessionCommandHandlerFactory, SessionCommandHandlerFactoryImpl>();
+            .AddScoped<IPatientQueryHandlerFactory, PatientQueryHandlerFactoryImpl>()
+            
+            .AddScoped<ISessionCommandHandlerFactory, SessionCommandHandlerFactoryImpl>()
+            .AddScoped<ISessionQueryHandlerFactory, SessionQueryHandlerFactoryImpl>();
     }
 }
