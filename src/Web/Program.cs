@@ -8,6 +8,7 @@ using EventContacts;
 using Infrastructure;
 using Infrastructure.Abstractions;
 using Presentation;
+using ReadOnlyRepositories;
 using Repositories;
 using Web.LocalDev;
 
@@ -37,6 +38,7 @@ public static class Program
             .AddAuthenticationDomain()
             .AddAdminAuthentication()
             .AddRepositories()
+            .AddReadOnlyRepositories()
      //       .AddAzureKeyVault()
             .AddEvents()
             .AddPresentation()

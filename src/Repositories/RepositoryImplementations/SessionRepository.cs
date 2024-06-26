@@ -1,15 +1,9 @@
 ﻿using Domain.Common;
 using Domain.Entities;
-using Domain.Query;
 using Domain.Repositories;
 using Domain.ValueObjects;
-
 using Infrastructure.Abstractions;
-
 using Microsoft.EntityFrameworkCore;
-
-using Repositories.CustomQueries;
-using Repositories.Evaluators;
 
 namespace Repositories.RepositoryImplementations;
 internal sealed class SessionRepository : ISessionRepository
