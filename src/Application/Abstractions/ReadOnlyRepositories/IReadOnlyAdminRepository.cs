@@ -7,7 +7,7 @@ namespace Application.Abstractions.ReadOnlyRepositories;
 
 public interface IReadOnlyAdminRepository
 {
-    Task<Result<UserDetailView>> GetAdminDetailViewAsync(Id adminId, CancellationToken cancellationToken = default);
+    Task<Result<AdminDetailView>> GetAdminDetailViewAsync(Id adminId, CancellationToken cancellationToken = default);
 
-    Task<Result<IReadOnlyCollection<UserListItem>>> GetUserListAsync(AdminFilter filter, CancellationToken cancellationToken = default);
+    Task<Result<IReadOnlyCollection<AdminListItem>>> GetAdminListAsync(AdminFilter filter, CancellationToken cancellationToken = default);
 }

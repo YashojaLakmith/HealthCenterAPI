@@ -21,7 +21,7 @@ internal sealed class ReadOnlyAdminRepository : IReadOnlyAdminRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Result<UserDetailView>> GetAdminDetailViewAsync(Id adminId, CancellationToken cancellationToken = default)
+    public async Task<Result<AdminDetailView>> GetAdminDetailViewAsync(Id adminId, CancellationToken cancellationToken = default)
     {
         var queryResult = await _dbContext.Admins
             .AsNoTracking()
@@ -29,10 +29,10 @@ internal sealed class ReadOnlyAdminRepository : IReadOnlyAdminRepository
             .Select(admin => admin.AsDetailView())
             .FirstOrDefaultAsync(cancellationToken);
 
-        return queryResult ?? Result<UserDetailView>.Failure(RepositoryErrors.NotFoundError);
+        return queryResult ?? Result<AdminDetailView>.Failure(RepositoryErrors.NotFoundError);
     }
 
-    public async Task<Result<IReadOnlyCollection<UserListItem>>> GetUserListAsync(AdminFilter filter, CancellationToken cancellationToken = default)
+    public async Task<Result<IReadOnlyCollection<AdminListItem>>> GetAdminListAsync(AdminFilter filter, CancellationToken cancellationToken = default)
     {
         return await _dbContext.Admins
             .AsNoTracking()

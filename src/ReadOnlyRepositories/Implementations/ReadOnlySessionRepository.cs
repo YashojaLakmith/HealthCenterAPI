@@ -26,6 +26,7 @@ internal sealed class ReadOnlySessionRepository : IReadOnlySessionRepository
     {
         var queryResult = await _dbContext.Sessions
             .AsNoTracking()
+            .Include(session => session.Doctor)
             .Where(session => session.Id == sessionId)
             .Select(session => session.AsDetailView())
             .FirstOrDefaultAsync(cancellationToken);
@@ -39,20 +40,21 @@ internal sealed class ReadOnlySessionRepository : IReadOnlySessionRepository
     {
         return await _dbContext.Sessions
             .AsNoTracking()
+            .Include(session => session.Doctor)
             .EvaluateFilter(filter)
             .Select(session => session.AsListItem())
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<Result<IReadOnlyCollection<SessionListItemView>>> GetSessionListAsync(Id doctorId, Pagination pagination, CancellationToken cancellationToken = default)
+    public async Task<Result<IReadOnlyCollection<SessionListItemView>>> GetSessionListAsync(
+        SessionFilterByDoctorId filter,
+        CancellationToken cancellationToken = default)
     {
         return await _dbContext.Sessions
             .AsNoTracking()
             .Include(session => session.Doctor)
-            .Where(session => session.Doctor.Id == doctorId)
-            .OrderBy(session => session.SessionSpan.SessionStartValue)
+            .EvaluateFilter(filter)
             .Select(session => session.AsListItem())
-            .ApplyPagination(pagination)
             .ToListAsync(cancellationToken);
     }
 }

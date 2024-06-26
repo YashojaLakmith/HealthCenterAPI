@@ -16,7 +16,6 @@ public interface IReadOnlySessionRepository
         CancellationToken cancellationToken = default);
     
     Task<Result<IReadOnlyCollection<SessionListItemView>>> GetSessionListAsync(
-        Id doctorId,
-        Pagination pagination,
+        SessionFilterByDoctorId filter,
         CancellationToken cancellationToken = default);
 }

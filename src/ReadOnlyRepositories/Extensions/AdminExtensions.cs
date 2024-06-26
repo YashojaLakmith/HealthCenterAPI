@@ -5,9 +5,9 @@ namespace ReadOnlyRepositories.Extensions;
 
 internal static class AdminExtensions
 {
-    internal static UserDetailView AsDetailView(this Admin admin)
+    internal static AdminDetailView AsDetailView(this Admin admin)
     {
-        return new UserDetailView(
+        return new AdminDetailView(
             admin.Id.Value,
             admin.AdminName.Value,
             admin.NIC.Value,
@@ -18,9 +18,9 @@ internal static class AdminExtensions
             admin.CreatedOn);
     }
 
-    internal static UserListItem AsListItem(this Admin admin)
+    internal static AdminListItem AsListItem(this Admin admin)
     {
-        return new UserListItem(
+        return new AdminListItem(
             admin.Id.Value,
             admin.AdminName.Value,
             admin.Role);
