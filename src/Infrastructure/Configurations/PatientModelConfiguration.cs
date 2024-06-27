@@ -49,6 +49,12 @@ internal sealed class PatientModelConfiguration : IEntityTypeConfiguration<Patie
                 value => value.Value,
                 value => DateOfBirth.Create(value).Value);
 
+        builder.Property(patient => patient.NIC)
+            .IsRequired(true)
+            .HasConversion(
+                value => value.Value,
+                value => NIC.Create(value).Value);
+
         builder.HasKey(patient => patient.Id)
             .IsClustered(false);
 
