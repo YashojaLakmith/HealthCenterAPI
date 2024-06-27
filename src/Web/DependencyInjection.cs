@@ -34,6 +34,10 @@ public static class DependencyInjection
 
     public static IServiceCollection ConfigureMassTransit(this IServiceCollection services, IConfiguration configuration)
     {
+        var uri = Environment.GetEnvironmentVariable(@"RABBITMQ_URI")!;
+        var user = Environment.GetEnvironmentVariable(@"RABBITMQ_USER")!;
+        var password = Environment.GetEnvironmentVariable(@"RABBITMQ_PASSWORD")!;
+        
         return services.AddMassTransit(busRegister =>
         {
             
@@ -42,10 +46,10 @@ public static class DependencyInjection
 
             busRegister.UsingRabbitMq((context, config) =>
             {
-                config.Host(new Uri(configuration[@"RabbitMQ:Host"]!), options =>
+                config.Host(new Uri(uri), options =>
                 {
-                    options.Username(configuration[@"RabbitMQ:Username"]!);
-                    options.Password(configuration[@"RabbitMQ:Password"]!);
+                    options.Username(user);
+                    options.Password(password);
                 });
                 
                 config.ConfigureEndpoints(context);

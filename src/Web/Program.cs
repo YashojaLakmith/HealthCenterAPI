@@ -27,10 +27,7 @@ public static class Program
 
     private static void ConfigureServices(IServiceCollection services, IWebHostEnvironment environment, IConfiguration configuration)
     {
-        if (environment.IsDevelopment())
-        {
-            services.AddSingleton<IDbConnectionStringSource, ConnectionStringProvider>();
-        }
+        services.AddSingleton<IDbConnectionStringSource, ConnectionStringProvider>();
         
         services.AddDomain()
             .AddApplication()
@@ -39,6 +36,7 @@ public static class Program
             .AddAdminAuthentication()
             .AddRepositories()
             .AddReadOnlyRepositories()
+            .AddSwaggerGen()
      //       .AddAzureKeyVault()
             .AddEvents()
             .AddPresentation()
@@ -68,6 +66,9 @@ public static class Program
         {
             app.UseDeveloperExceptionPage();
         }
+
+	app.UseSwagger();
+       	app.UseSwaggerUI();
 
         app.UseHttpsRedirection();
         app.UseRouting();

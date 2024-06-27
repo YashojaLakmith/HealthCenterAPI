@@ -8,7 +8,7 @@ using Domain.Repositories;
 using Domain.ValueObjects;
 
 namespace Application.Admin.CommandHandlers;
-internal class CreateAdminCommandHandler : ICommandHandler<CreateUserCommand>
+internal class CreateAdminCommandHandler : ICommandHandler<CreateAdminCommand>
 {
     private readonly IAdminCreatedEventPublisher _eventPublisher;
     private readonly ICreateUserService _createUserService;
@@ -23,7 +23,7 @@ internal class CreateAdminCommandHandler : ICommandHandler<CreateUserCommand>
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result> HandleAsync(CreateUserCommand command, CancellationToken cancellationToken = default)
+    public async Task<Result> HandleAsync(CreateAdminCommand command, CancellationToken cancellationToken = default)
     {
         var emailResult = EmailAddress.CreateEmailAddress(command.EmailAddress);
         if (emailResult.IsFailure)

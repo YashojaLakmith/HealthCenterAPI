@@ -7,7 +7,7 @@ namespace Application.Abstractions.Factories.Admin;
 public interface IAdminCommandHandlerFactory
 {
     ICommandHandler<ChangeRoleCommand> ChangeRoleCommandHandler { get; }
-    ICommandHandler<CreateUserCommand> CreateAdminCommandHandler { get; }
+    ICommandHandler<CreateAdminCommand> CreateAdminCommandHandler { get; }
     ICommandHandler<IdCommand> DeleteAdminCommandHandler { get; }
     ICommandHandler<ModifyContactInformationCommand> ModifyContactInformationCommandHandler { get; }
 }
