@@ -9,16 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers;
 
-[ApiController]
-[Route(@"api/v1/auth")]
-public class AuthenticationController : ControllerBase
+[Route(@"auth/")]
+public class AuthenticationController(
+    IAuthenticationCommandHandlerFactory commandHandlers)
+    : BaseController
 {
-    private readonly IAuthenticationCommandHandlerFactory _factory;
-
-    public AuthenticationController(IAuthenticationCommandHandlerFactory factory)
-    {
-        _factory = factory;
-    }
+    private readonly IAuthenticationCommandHandlerFactory _commandHandlers = commandHandlers;
 
     [HttpPost]
     [Route(@"login/")]

@@ -7,32 +7,29 @@ services:
             context: .
             dockerfile: src/Web/Dockerfile
         environment:
-            -   RabbitMQ__Host=amqp://api-eventbus:5672
-            -   RabbitMQ__Username=guest
-            -   RabbitMQ__Password=guest
-            -   Redis__Host=redis:6379
+            RABBITMQ_URI: rabbitmq://api-eventbus:5672/
+            RABBITMQ_USER: guest
+            RABBITMQ_PASSWORD: guest
         ports:
-            -   5000:8080
-            -   5001:8081
+            -   8080:8080
+            -   8081:8081
         depends_on:
             -   redis
             -   rabbitmq
+            
 
     redis:
-        image: redis
-        container_name: dist-cache
+        image: redis:latest
+        container_name: distributed-cache
         expose:
             -   6379
         
     rabbitmq:
-        image: rabbitmq
-        container_name: HealthCenterAPI.EventBus
+        image: rabbitmq:latest
+        container_name: event-broker
         hostname: api-eventbus
-        volumes:
-            -   ./.containers/bus/data/:var/lib/rabbitmq
-            -   ./.containers/bus/log:var/log/rabbitmq
         environment:
             RABBITMQ_DEFAULT_USER: guest
-            RABBITMQ_DEFAULT_PW: guest
+            RABBITMQ_DEFAULT_PASSWORD: guest
         expose:
             -   5672

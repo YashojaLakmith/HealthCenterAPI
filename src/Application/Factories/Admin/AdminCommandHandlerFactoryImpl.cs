@@ -24,7 +24,7 @@ internal sealed class AdminCommandHandlerFactoryImpl : IAdminCommandHandlerFacto
     private readonly IAdminCreatedEventPublisher _eventPublisher;
 
     private ICommandHandler<ChangeRoleCommand>? _changeRoleHandler;
-    private ICommandHandler<CreateUserCommand>? _createHandler;
+    private ICommandHandler<CreateAdminCommand>? _createHandler;
     private ICommandHandler<IdCommand>? _deleteHandler;
     private ICommandHandler<ModifyContactInformationCommand>? _modifyHandler;
 
@@ -55,7 +55,7 @@ internal sealed class AdminCommandHandlerFactoryImpl : IAdminCommandHandlerFacto
             _adminRepository,
             _invoker);
 
-    public ICommandHandler<CreateUserCommand> CreateAdminCommandHandler
+    public ICommandHandler<CreateAdminCommand> CreateAdminCommandHandler
         => _createHandler ??= new CreateAdminCommandHandler(
             _eventPublisher,
             _createUserService,
