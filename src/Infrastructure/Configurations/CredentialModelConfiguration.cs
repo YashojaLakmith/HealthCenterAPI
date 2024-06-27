@@ -12,7 +12,7 @@ internal sealed class CredentialModelConfiguration : IEntityTypeConfiguration<Cr
         builder.Property(cred => cred.Id)
             .HasConversion(
                 value => value.Value,
-                value => Id.CreateId(value).Value);
+                value => Id.CreateId(value));
 
         builder.Property(cred => cred.PasswordHash)
             .IsRequired(true)

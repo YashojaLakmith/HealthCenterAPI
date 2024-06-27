@@ -19,11 +19,7 @@ internal class CreateSessionCommandHandler : ICommandHandler<CreateSessionComman
 
     public async Task<Result> HandleAsync(CreateSessionCommand command, CancellationToken cancellationToken = default)
     {
-        var idResult = Id.CreateId(command.DoctorId);
-        if (idResult.IsFailure)
-        {
-            return idResult;
-        }
+        var id = Id.CreateId(command.DoctorId);
 
         var sessionSpanResult = SessionSpan.Create(command.SessionStart, command.SessionEnd);
         if (sessionSpanResult.IsFailure)
@@ -31,7 +27,7 @@ internal class CreateSessionCommandHandler : ICommandHandler<CreateSessionComman
             return sessionSpanResult;
         }
 
-        var doctorResult = await _doctorRepository.GetByIdAsync(idResult.Value, cancellationToken);
+        var doctorResult = await _doctorRepository.GetByIdAsync(id, cancellationToken);
         if (doctorResult.IsFailure)
         {
             return doctorResult;

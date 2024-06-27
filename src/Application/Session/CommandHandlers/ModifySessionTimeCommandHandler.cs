@@ -19,11 +19,7 @@ internal class ModifySessionTimeCommandHandler : ICommandHandler<ModifySessionTi
 
     public async Task<Result> HandleAsync(ModifySessionTimeCommand command, CancellationToken cancellationToken = default)
     {
-        var idResult = Id.CreateId(command.SessionId);
-        if (idResult.IsFailure)
-        {
-            return idResult;
-        }
+        var id = Id.CreateId(command.SessionId);
 
         var spanResult = SessionSpan.Create(command.SessionStartTime, command.SessionEndTime);
         if (spanResult.IsFailure)
@@ -31,7 +27,7 @@ internal class ModifySessionTimeCommandHandler : ICommandHandler<ModifySessionTi
             return spanResult;
         }
 
-        var sessionResult = await _sessionRepository.GetByIdAsync(idResult.Value, cancellationToken);
+        var sessionResult = await _sessionRepository.GetByIdAsync(id, cancellationToken);
         if (sessionResult.IsFailure)
         {
             return sessionResult;

@@ -62,7 +62,7 @@ internal class CreateAdminCommandHandler : ICommandHandler<CreateAdminCommand>
             command.Gender,
             emailResult.Value,
             phoneNumberResult.Value,
-            Id.CreateId(invokerResult.Value.UserId).Value,
+            Id.CreateId(invokerResult.Value.UserId),
             cancellationToken);
 
         if (creationResult.IsFailure)

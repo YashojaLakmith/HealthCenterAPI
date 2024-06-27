@@ -25,11 +25,7 @@ internal class ChangeRoleCommandHandler : ICommandHandler<ChangeRoleCommand>
 
     public async Task<Result> HandleAsync(ChangeRoleCommand command, CancellationToken cancellationToken = default)
     {
-        var idResult = Id.CreateId(command.UserId);
-        if (idResult.IsFailure)
-        {
-            return idResult;
-        }
+        var id = Id.CreateId(command.UserId);
 
         var invokerResult = await _invoker.GetInvokingUserAsync(cancellationToken);
         if (invokerResult.IsFailure)
@@ -37,19 +33,15 @@ internal class ChangeRoleCommandHandler : ICommandHandler<ChangeRoleCommand>
             return invokerResult;
         }
 
-        var invokerIdResult = Id.CreateId(invokerResult.Value.UserId);
-        if (invokerIdResult.IsFailure)
-        {
-            return invokerIdResult;
-        }
+        var invokerId = Id.CreateId(invokerResult.Value.UserId);
 
-        var adminResult = await _adminRepository.GetByIdAsync(idResult.Value, cancellationToken);
+        var adminResult = await _adminRepository.GetByIdAsync(id, cancellationToken);
         if(adminResult.IsFailure)
         {
             return adminResult;
         }
 
-        var changeResult = await _changeRoleService.ChangeAdminRoleAsync(adminResult.Value, invokerIdResult.Value, command.NewRole, cancellationToken);
+        var changeResult = await _changeRoleService.ChangeAdminRoleAsync(adminResult.Value, invokerId, command.NewRole, cancellationToken);
         if(changeResult.IsFailure)
         {
             return changeResult;

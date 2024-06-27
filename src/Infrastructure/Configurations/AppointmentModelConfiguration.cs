@@ -16,7 +16,7 @@ internal sealed class AppointmentModelConfiguration : IEntityTypeConfiguration<A
             .IsRequired(true)
             .HasConversion(
                 value => value.Value,
-                value => Id.CreateId(value).Value);
+                value => Id.CreateId(value));
 
         builder.Property(a => a.AppointmentCreatedOn)
             .IsRequired(true);

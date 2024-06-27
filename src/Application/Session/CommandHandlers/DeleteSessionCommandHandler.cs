@@ -19,25 +19,16 @@ internal class DeleteSessionCommandHandler : ICommandHandler<DeleteSessionComman
 
     public async Task<Result> HandleAsync(DeleteSessionCommand command, CancellationToken cancellationToken = default)
     {
-        var docIdResult = Id.CreateId(command.DoctorId);
-        if (docIdResult.IsFailure)
-        {
-            return docIdResult;
-        }
+        var doctorId = Id.CreateId(command.DoctorId);
+        var sessionId = Id.CreateId(command.SessionId);
 
-        var sessionIdResult = Id.CreateId(command.SessionId);
-        if (sessionIdResult.IsFailure)
-        {
-            return sessionIdResult;
-        }
-
-        var doctorResult = await _doctorRepository.GetByIdAsync(docIdResult.Value, cancellationToken);
+        var doctorResult = await _doctorRepository.GetByIdAsync(doctorId, cancellationToken);
         if (doctorResult.IsFailure)
         {
             return doctorResult;
         }
 
-        var result = doctorResult.Value.RemoveSession(sessionIdResult.Value);
+        var result = doctorResult.Value.RemoveSession(sessionId);
         if (result.IsFailure)
         {
             return result;

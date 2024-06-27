@@ -22,16 +22,12 @@ public class ViewSessionListByDoctorQueryHandler : IQueryHandler<IReadOnlyCollec
         SessionFilterByDoctorIdQuery query,
         CancellationToken cancellationToken = default)
     {
-        var idResult = query.DoctorId is null ? null : Id.CreateId(query.DoctorId.Value);
-        if (idResult is not null && idResult.IsFailure)
-        {
-            return Result<IReadOnlyCollection<SessionListItemView>>.Failure(idResult.Error);
-        }
+        var id = query.DoctorId is null ? null : Id.CreateId(query.DoctorId.Value);
 
         var paginationResult = Pagination.Create(query.Pagination.ResultsPerPage, query.Pagination.PageNumber);
         if (paginationResult.IsFailure)
         {
-            return Result<IReadOnlyCollection<SessionListItemView>>.Failure(idResult.Error);
+            return Result<IReadOnlyCollection<SessionListItemView>>.Failure(paginationResult.Error);
         }
 
         if (query.TimeRange?.RangeBegin > query.TimeRange?.RangeEnd)
@@ -41,7 +37,7 @@ public class ViewSessionListByDoctorQueryHandler : IQueryHandler<IReadOnlyCollec
 
         var filter = SessionFilterByDoctorId.CreateFilter(
             paginationResult.Value,
-            idResult?.Value,
+            id,
             query.TimeRange?.RangeBegin,
             query.TimeRange?.RangeEnd);
 

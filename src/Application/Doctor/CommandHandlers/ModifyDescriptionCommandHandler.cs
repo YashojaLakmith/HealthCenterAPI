@@ -19,11 +19,7 @@ internal class ModifyDescriptionCommandHandler : ICommandHandler<ModifyDescripti
 
     public async Task<Result> HandleAsync(ModifyDescriptionCommand command, CancellationToken cancellationToken = default)
     {
-        var doctorIdResult = Id.CreateId(command.DoctorId);
-        if (doctorIdResult.IsFailure)
-        {
-            return doctorIdResult;
-        }
+        var doctorId = Id.CreateId(command.DoctorId);
 
         var descriptionResult = Description.CreateDescription(command.NewDescription);
         if (descriptionResult.IsFailure)
@@ -31,7 +27,7 @@ internal class ModifyDescriptionCommandHandler : ICommandHandler<ModifyDescripti
             return descriptionResult;
         }
 
-        var doctorResult = await _doctorRepository.GetByIdAsync(doctorIdResult.Value, cancellationToken);
+        var doctorResult = await _doctorRepository.GetByIdAsync(doctorId, cancellationToken);
         if (doctorResult.IsFailure)
         {
             return doctorResult;

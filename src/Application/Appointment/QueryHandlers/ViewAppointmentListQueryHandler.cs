@@ -20,14 +20,9 @@ internal class ViewAppointmentListQueryHandler : IQueryHandler<IReadOnlyCollecti
         AppointmentFilterQuery query,
         CancellationToken cancellationToken = default)
     {
-        var idResult = query.PatientId is null
+        var id = query.PatientId is null
             ? null
             : Id.CreateId(query.PatientId.Value);
-
-        if (idResult is not null && idResult.IsFailure)
-        {
-            return Result<IReadOnlyCollection<AppointmentListItemView>>.Failure(idResult.Error);
-        }
 
         var paginationResult = Pagination.Create(query.Pagination.ResultsPerPage, query.Pagination.PageNumber);
         if (paginationResult.IsFailure)
@@ -37,7 +32,7 @@ internal class ViewAppointmentListQueryHandler : IQueryHandler<IReadOnlyCollecti
 
         var filter = AppointmentFilter.CreateFilter(
             paginationResult.Value,
-            idResult?.Value,
+            id,
             query.AppointmentStatus);
 
         return await _appointmentRepository.GetAppointmentListAsync(filter, cancellationToken);

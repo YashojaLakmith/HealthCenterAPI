@@ -18,12 +18,8 @@ internal class AdminDetailViewQueryHandler : IQueryHandler<AdminDetailView, IdQu
 
     public async Task<Result<AdminDetailView>> HandleAsync(IdQuery query, CancellationToken cancellationToken = default)
     {
-        var idResult = Id.CreateId(query.Id);
-        if (idResult.IsFailure)
-        {
-            return Result<AdminDetailView>.Failure(idResult.Error);
-        }
+        var id = Id.CreateId(query.Id);
 
-        return await _adminRepository.GetAdminDetailViewAsync(idResult.Value, cancellationToken);
+        return await _adminRepository.GetAdminDetailViewAsync(id, cancellationToken);
     }
 }

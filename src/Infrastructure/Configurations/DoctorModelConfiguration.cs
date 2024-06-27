@@ -14,7 +14,7 @@ internal sealed class DoctorModelConfiguration : IEntityTypeConfiguration<Doctor
             .IsRequired(true)
             .HasConversion(
                 value => value.Value,
-                value => Id.CreateId(value).Value);
+                value => Id.CreateId(value));
 
         builder.Property(doc => doc.DoctorDescription)
             .IsRequired(true)

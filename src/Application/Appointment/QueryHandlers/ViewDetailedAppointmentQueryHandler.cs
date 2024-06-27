@@ -17,12 +17,8 @@ internal class ViewDetailedAppointmentQueryHandler : IQueryHandler<AppointmentDe
 
     public async Task<Result<AppointmentDetailView>> HandleAsync(IdQuery query, CancellationToken cancellationToken = default)
     {
-        var idResult = Id.CreateId(query.Id);
-        if (idResult.IsFailure)
-        {
-            return Result<AppointmentDetailView>.Failure(idResult.Error);
-        }
+        var id = Id.CreateId(query.Id);
 
-        return await _appointmentRepository.GetAppointmentDetailViewAsync(idResult.Value, cancellationToken);
+        return await _appointmentRepository.GetAppointmentDetailViewAsync(id, cancellationToken);
     }
 }

@@ -17,12 +17,8 @@ internal class ViewPatientDetailsByIdQueryHandler : IQueryHandler<PatientDetailV
 
     public async Task<Result<PatientDetailView>> HandleAsync(IdQuery query, CancellationToken cancellationToken = default)
     {
-        var idResult = Id.CreateId(query.Id);
-        if (idResult.IsFailure)
-        {
-            return Result<PatientDetailView>.Failure(idResult.Error);
-        }
+        var id = Id.CreateId(query.Id);
 
-        return await _patientRepository.GetPatientDetailViewAsync(idResult.Value, cancellationToken);
+        return await _patientRepository.GetPatientDetailViewAsync(id, cancellationToken);
     }
 }

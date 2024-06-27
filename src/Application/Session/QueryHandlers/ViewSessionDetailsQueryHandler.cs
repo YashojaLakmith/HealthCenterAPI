@@ -18,12 +18,8 @@ internal class ViewSessionDetailsQueryHandler : IQueryHandler<SessionDetailView,
 
     public async Task<Result<SessionDetailView>> HandleAsync(IdQuery query, CancellationToken cancellationToken = default)
     {
-        var idResult = Id.CreateId(query.Id);
-        if (idResult.IsFailure)
-        {
-            return Result<SessionDetailView>.Failure(idResult.Error);
-        }
+        var id = Id.CreateId(query.Id);
 
-        return await _sessionRepository.GetSessionDetailViewAsync(idResult.Value, cancellationToken);
+        return await _sessionRepository.GetSessionDetailViewAsync(id, cancellationToken);
     }
 }

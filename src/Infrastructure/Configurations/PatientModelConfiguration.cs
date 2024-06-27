@@ -27,7 +27,7 @@ internal sealed class PatientModelConfiguration : IEntityTypeConfiguration<Patie
             .IsRequired(true)
             .HasConversion(
                 value => value.Value,
-                value => Id.CreateId(value).Value);
+                value => Id.CreateId(value));
 
         builder.Property(patient => patient.PatientName)
             .IsRequired(true)

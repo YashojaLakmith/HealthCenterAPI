@@ -20,8 +20,8 @@ internal class DeleteDoctorCommandHandler : ICommandHandler<IdCommand>
 
     public async Task<Result> HandleAsync(IdCommand command, CancellationToken cancellationToken = default)
     {
-        var idResult = Id.CreateId(command.Id);
-        var existsResult = await _doctorRepository.GetByIdAsync(idResult.Value, cancellationToken);
+        var id = Id.CreateId(command.Id);
+        var existsResult = await _doctorRepository.GetByIdAsync(id, cancellationToken);
 
         if (existsResult.IsFailure)
         {

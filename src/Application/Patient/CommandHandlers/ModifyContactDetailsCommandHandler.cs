@@ -28,11 +28,7 @@ internal class ModifyContactDetailsCommandHandler : ICommandHandler<ModifyContac
 
     public async Task<Result> HandleAsync(ModifyContactInformationCommand command, CancellationToken cancellationToken = default)
     {
-        var idResult = Id.CreateId(command.PatientId);
-        if (idResult.IsFailure)
-        {
-            return idResult;
-        }
+        var id = Id.CreateId(command.PatientId);
 
         var emailResult = command.EmailAddress is null ? null : EmailAddress.CreateEmailAddress(command.EmailAddress);
         if (emailResult is not null && emailResult.IsFailure)
@@ -46,7 +42,7 @@ internal class ModifyContactDetailsCommandHandler : ICommandHandler<ModifyContac
             return phoneNumberResult;
         }
 
-        var patientResult = await _patientRepository.GetByIdAsync(idResult.Value, cancellationToken);
+        var patientResult = await _patientRepository.GetByIdAsync(id, cancellationToken);
         if (patientResult.IsFailure)
         {
             return patientResult;
