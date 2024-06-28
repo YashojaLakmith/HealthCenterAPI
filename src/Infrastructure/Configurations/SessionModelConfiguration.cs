@@ -14,7 +14,7 @@ internal sealed class SessionModelConfiguration : IEntityTypeConfiguration<Sessi
             .IsRequired(true)
             .HasConversion(
                 value => value.Value,
-                value => Id.CreateId(value).Value);
+                value => Id.CreateId(value));
 
         builder.OwnsOne(session => session.SessionSpan, span =>
         {

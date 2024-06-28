@@ -33,7 +33,7 @@ internal class ModifyContactInformationCommandHandler : ICommandHandler<ModifyCo
 
         var emailResult = command.EmailAddress is null ? null : EmailAddress.CreateEmailAddress(command.EmailAddress);
         var phoneNumberResult = command.PhoneNumber is null ? null : PhoneNumber.CreatePhoneNumber(command.PhoneNumber);
-        var idResult = Id.CreateId(command.DoctorId);
+        var id = Id.CreateId(command.DoctorId);
 
         if(emailResult is null && phoneNumberResult is null)
         {
@@ -50,7 +50,7 @@ internal class ModifyContactInformationCommandHandler : ICommandHandler<ModifyCo
             return phoneNumberResult;
         }
 
-        var existingDoctor = await _doctorRepository.GetByIdAsync(idResult.Value, cancellationToken);
+        var existingDoctor = await _doctorRepository.GetByIdAsync(id, cancellationToken);
         if (existingDoctor.IsFailure)
         {
             return Result.Failure(DoctorErrors.NotFound);

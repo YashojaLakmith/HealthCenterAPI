@@ -1,10 +1,8 @@
-﻿using System.Security.Claims;
-
-using Authentication.Repositories;
+﻿using Authentication.Repositories;
 using DistributedRedisCache.Abstractions;
 using Domain.Common;
 using Domain.Repositories;
-using DistributedCacheEntryOptions = Microsoft.Extensions.Caching.Distributed.DistributedCacheEntryOptions;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace DistributedRedisCache.SessionToken;
 internal sealed class SessionTokenStore : ISessionTokenStore

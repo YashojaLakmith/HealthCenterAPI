@@ -19,13 +19,9 @@ internal class DeletePatientCommandHandler : ICommandHandler<IdCommand>
 
     public async Task<Result> HandleAsync(IdCommand command, CancellationToken cancellationToken = default)
     {
-        var idResult = Id.CreateId(command.Id);
-        if (idResult.IsFailure)
-        {
-            return idResult;
-        }
+        var id = Id.CreateId(command.Id);
 
-        var patientResult = await _patientRepository.GetByIdAsync(idResult.Value, cancellationToken);
+        var patientResult = await _patientRepository.GetByIdAsync(id, cancellationToken);
         if (patientResult.IsFailure)
         {
             return patientResult;

@@ -10,6 +10,7 @@ public static class DependencyInjection
         return services
             .AddScoped<IPasswordAuthenticationService, PasswordAuthenticationService>()
             .AddScoped<IResetTokenRequetService, ResetTokenRequestService>()
-            .AddScoped<ITokenBasedPasswordResetService, TokenBasedPasswordResetService>();
+            .AddScoped<ITokenBasedPasswordResetService, TokenBasedPasswordResetService>()
+            .AddScoped<ISessionVerificationService, SessionVerificationService>();
     }
 }

@@ -42,6 +42,7 @@ public static class Program
             .AddPresentation()
             .ConfigureLogging()
             .ConfigureInvoker()
+            .ConfigureAuthentication()
             .ConfigureMassTransit(configuration)
             .AddDistributedTokenStoring(resetTokenConfig =>
             {
@@ -67,10 +68,11 @@ public static class Program
             app.UseDeveloperExceptionPage();
         }
 
-	app.UseSwagger();
+	    app.UseSwagger();
        	app.UseSwaggerUI();
 
         app.UseHttpsRedirection();
+        app.UseAuthentication();
         app.UseRouting();
         app.UseAuthorization();
         app.MapControllers();

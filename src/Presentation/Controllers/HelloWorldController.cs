@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Presentation.Utilities;
 
 namespace Presentation.Controllers;
 
 [ApiController]
-[Route(@"api/v1/hello-world/")]
-public sealed class HelloWorld : ControllerBase
+[NestedRoute<HelloWorldController>(@"hello-world/")]
+public sealed class HelloWorldController : ControllerBase
 {
     [HttpGet]
     public IActionResult Greet()

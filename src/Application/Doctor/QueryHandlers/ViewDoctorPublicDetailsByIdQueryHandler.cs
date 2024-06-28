@@ -18,12 +18,8 @@ internal class ViewDoctorPublicDetailsByIdQueryHandler : IQueryHandler<DoctorDet
 
     public async Task<Result<DoctorDetailViewPublic>> HandleAsync(IdQuery query, CancellationToken cancellationToken = default)
     {
-        var idResult = Id.CreateId(query.Id);
-        if (idResult.IsFailure)
-        {
-            return Result<DoctorDetailViewPublic>.Failure(idResult.Error);
-        }
+        var id = Id.CreateId(query.Id);
 
-        return await _doctorRepository.GetDoctorDetailsForPublicAsync(idResult.Value, cancellationToken);
+        return await _doctorRepository.GetDoctorDetailsForPublicAsync(id, cancellationToken);
     }
 }

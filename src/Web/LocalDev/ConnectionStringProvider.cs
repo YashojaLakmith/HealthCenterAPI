@@ -12,7 +12,7 @@ public sealed class ConnectionStringProvider : IDbConnectionStringSource
     public string GetConnectionString()
     {
         return """
-               Server=(localdb)\MSSQLLocalDB;Integrated Security=true;AttachDbFileName=E:\Program Data\SQL Server LocalDB\health-api.mdf
+               Server=(localdb)\MSSQLLocalDB;Integrated Security=true;Initial Catalog=E:\Program Data\SQL Server LocalDB\health-api.mdf
 
                """;
     }

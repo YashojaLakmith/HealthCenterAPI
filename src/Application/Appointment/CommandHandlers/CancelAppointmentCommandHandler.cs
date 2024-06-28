@@ -23,8 +23,8 @@ internal class CancelAppointmentCommandHandler : ICommandHandler<IdCommand>
 
     public async Task<Result> HandleAsync(IdCommand command, CancellationToken cancellationToken = default)
     {
-        var idResult = Id.CreateId(command.Id);
-        var appointmentResult = await _appointmentRepository.GetByIdAsync(idResult.Value, cancellationToken);
+        var id = Id.CreateId(command.Id);
+        var appointmentResult = await _appointmentRepository.GetByIdAsync(id, cancellationToken);
 
         if (appointmentResult.IsFailure)
         {

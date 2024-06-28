@@ -26,7 +26,7 @@ internal sealed class AdminModelConfiguration : IEntityTypeConfiguration<Admin>
             .IsRequired(true)
             .HasConversion(
                 value => value.Value,
-                value => Id.CreateId(value).Value);
+                value => Id.CreateId(value));
 
         builder.Property(admin => admin.NIC)
             .IsRequired(true)

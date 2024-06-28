@@ -2,61 +2,160 @@
 using Application.Common;
 using Application.Patient.Commands;
 using Application.Patient.Queries;
+using Application.Patient.Views;
+using Domain.Common;
+using Domain.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Presentation.DataTransferObjects.Common;
+using Presentation.Utilities;
 
 namespace Presentation.Controllers;
 
-[Route(@"patient/")]
+[NestedRoute<PatientController>(@"patient/")]
 public class PatientController(
     IPatientCommandHandlerFactory commandHandlers,
-    IPatientQueryHandlerFactory queryHandlers)
-    : BaseController
+    IPatientQueryHandlerFactory queryHandlers,
+    ILogger<PatientController> logger)
+    : BaseController(logger)
 {
-    private readonly IPatientCommandHandlerFactory _commandHandlers = commandHandlers;
-    private readonly IPatientQueryHandlerFactory _queryHandlers = queryHandlers;
-
     [HttpGet]
+    [ProducesResponseType(typeof(IReadOnlyCollection<PatientListItemView>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ViewPatientListAsync(
         [FromBody] PatientFilterQuery filter)
     {
-        throw new NotImplementedException();
+        return await HandleActionAsync(async () =>
+        {
+            var result = await queryHandlers.PatientListViewQueryHandler.HandleAsync(filter);
+            return result.IsFailure
+                ? BadRequest(result.Error)
+                : Ok(result.Value);
+        });
     }
 
     [HttpGet]
-    [Route(@"id/{patientId}/")]
+    [Route(@"{patientId:guid}/")]
+    [ProducesResponseType(typeof(PatientDetailView), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ViewPatientDetailsByIdAsync(
-        [FromRoute] IdQuery patientId)
+        [FromRoute] Guid patientId)
     {
-        throw new NotImplementedException();
+        return await HandleActionAsync(async () =>
+        {
+            var result = 
+                await queryHandlers.PatientDetailViewByIdQueryHandler.HandleAsync(new IdQuery(patientId));
+            if (result.IsSuccess)
+            {
+                return Ok(result.Value);
+            }
+
+            return result.Error == RepositoryErrors.NotFoundError
+                ? NotFound(result.Error)
+                : BadRequest(result.Error);
+        });
     }
 
     [HttpGet]
     [Route(@"nic/{patientNic}/")]
+    [ProducesResponseType(typeof(PatientDetailView), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ViewPatientDetailsByNicAsync(
         [FromRoute] NICQuery patientNic)
     {
-        throw new NotImplementedException();
+        return await HandleActionAsync(async () =>
+        {
+            var result = 
+                await queryHandlers.PatientDetailViewByNicQueryHandler.HandleAsync(patientNic);
+            if (result.IsSuccess)
+            {
+                return Ok(result.Value);
+            }
+
+            return result.Error == RepositoryErrors.NotFoundError
+                ? NotFound(result.Error)
+                : BadRequest(result.Error);
+        });
     }
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreatePatientAsync(
         [FromBody] CreatePatientCommand newPatientInformation)
     {
-        throw new NotImplementedException();
+        return await HandleActionAsync(async () =>
+        {
+            var result = await commandHandlers.CreatePatientCommandHandler.HandleAsync(newPatientInformation);
+            return result.IsFailure
+                ? BadRequest(result.Error)
+                : StatusCode(StatusCodes.Status201Created);
+        });
     }
 
     [HttpPatch]
+    [Route(@"{patientId:guid}/change-contact/")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ModifyPatientContactDetailsAsync(
-        [FromBody] ModifyContactInformationCommand contactInformationToChange)
+        [FromRoute] Guid patientId,
+        [FromBody] ContactDetails contactInformationToChange)
     {
-        throw new NotImplementedException();
+        var command = new ModifyContactInformationCommand(
+            patientId,
+            contactInformationToChange.PhoneNumber,
+            contactInformationToChange.EmailAddress);
+
+        return await HandleActionAsync(async () =>
+        {
+            var result = await commandHandlers.ModifyPatientContactInformationCommandHandler.HandleAsync(command);
+            return result.IsFailure
+                ? NoContent()
+                : BadRequest(result.Error);
+        });
     }
 
     [HttpDelete]
-    [Route(@"{patientId}")]
+    [Route(@"{patientId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeletePatientAsync(
-        [FromRoute] IdCommand patientId)
+        [FromRoute] Guid patientId)
     {
-        throw new NotImplementedException();
+        return await HandleActionAsync(async () =>
+        {
+            var result = await commandHandlers.DeletePatientCommandHandler.HandleAsync(new IdCommand(patientId));
+            if (result.IsSuccess)
+            {
+                return NoContent();
+            }
+
+            return result.Error == RepositoryErrors.NotFoundError
+                ? NotFound(result.Error)
+                : BadRequest(result.Error);
+        });
     }
 }

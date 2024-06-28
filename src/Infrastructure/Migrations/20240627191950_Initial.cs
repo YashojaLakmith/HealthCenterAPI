@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class ExportModel : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -57,6 +57,7 @@ namespace Infrastructure.Migrations
                     PhoneNumber = table.Column<string>(type: "NVARCHAR(10)", nullable: false),
                     EmailAddress = table.Column<string>(type: "NVARCHAR(256)", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NIC = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Gender = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -70,8 +71,8 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Salt = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false)
+                    PasswordHash = table.Column<byte[]>(type: "varbinary(256)", maxLength: 256, nullable: false),
+                    Salt = table.Column<byte[]>(type: "varbinary(256)", maxLength: 256, nullable: false)
                 },
                 constraints: table =>
                 {

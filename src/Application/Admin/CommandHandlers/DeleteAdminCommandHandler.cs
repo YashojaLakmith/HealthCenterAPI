@@ -24,11 +24,7 @@ internal class DeleteAdminCommandHandler : ICommandHandler<IdCommand>
 
     public async Task<Result> HandleAsync(IdCommand command, CancellationToken cancellationToken = default)
     {
-        var idResult = Id.CreateId(command.Id);
-        if (idResult.IsFailure)
-        {
-            return idResult;
-        }
+        var id = Id.CreateId(command.Id);
 
         var invokerResult = await _invoker.GetInvokingUserAsync(cancellationToken);
         if (invokerResult.IsFailure)
@@ -37,8 +33,8 @@ internal class DeleteAdminCommandHandler : ICommandHandler<IdCommand>
         }
 
         var deleteResult = await _deleteAdminService.DeleteAdminAsync(
-            idResult.Value,
-            Id.CreateId(invokerResult.Value.UserId).Value,
+            id,
+            Id.CreateId(invokerResult.Value.UserId),
             cancellationToken);
 
         if (deleteResult.IsFailure)

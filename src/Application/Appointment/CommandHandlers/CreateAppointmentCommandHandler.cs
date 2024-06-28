@@ -24,13 +24,13 @@ internal class CreateAppointmentCommandHandler : ICommandHandler<NewAppointmentC
         var patientId = Id.CreateId(command.PatientId);
         var sessionId = Id.CreateId(command.SessionId);
 
-        var patientResult = await _patientRepository.GetByIdAsync(patientId.Value, cancellationToken);
+        var patientResult = await _patientRepository.GetByIdAsync(patientId, cancellationToken);
         if (patientResult.IsFailure)
         {
             return patientResult;
         }
 
-        var sessionResult = await _sessionRepository.GetByIdAsync(sessionId.Value, cancellationToken);
+        var sessionResult = await _sessionRepository.GetByIdAsync(sessionId, cancellationToken);
         if (sessionResult.IsFailure)
         {
             return sessionResult;

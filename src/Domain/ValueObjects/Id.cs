@@ -13,9 +13,9 @@ public class Id : ValueObject
         Value = id;
     }
 
-    public static Result<Id> CreateId(Guid id)
+    public static Id CreateId(Guid id)
     {
-        return Result<Id>.Success(new Id(id));
+        return new Id(id);
     }
 
     public static Id CreateId()
@@ -25,12 +25,9 @@ public class Id : ValueObject
 
     public static Result<Id> CreateId(string idString)
     {
-        if(!Guid.TryParse(idString, out var guid))
-        {
-            return Result<Id>.Failure(IdErrors.InvalidId);
-        }
-
-        return new Id(guid);
+        return !Guid.TryParse(idString, out var guid) 
+            ? Result<Id>.Failure(IdErrors.InvalidId) 
+            : new Id(guid);
     }
 
     public override IEnumerable<object> GetAtomicValues()
