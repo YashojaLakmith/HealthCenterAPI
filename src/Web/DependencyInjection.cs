@@ -1,9 +1,11 @@
 ﻿using Application.Abstractions.Invoker;
 using EventContacts;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication;
 using Presentation;
 using Serilog;
 using Web.HttpContextUser;
+using Web.WebAPIAuthentication;
 
 namespace Web;
 
@@ -55,5 +57,15 @@ public static class DependencyInjection
                 config.ConfigureEndpoints(context);
             });
         });
+    }
+
+    public static IServiceCollection ConfigureAuthentication(this IServiceCollection services)
+    {
+        services.AddAuthentication(AdminAuthenticationHandler.SchemeName)
+            .AddScheme<AuthenticationSchemeOptions, AdminAuthenticationHandler>(
+                AdminAuthenticationHandler.SchemeName,
+                null);
+
+        return services;
     }
 }

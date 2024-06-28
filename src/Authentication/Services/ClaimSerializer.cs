@@ -4,13 +4,13 @@ using System.Text.Json;
 namespace Authentication.Services;
 internal static class ClaimSerializer
 {
-    private static readonly JsonSerializerOptions _jsonOptions = new() { };
+    private static readonly JsonSerializerOptions JsonOptions = new() { };
 
     internal static async Task<byte[]> SerializeClaimsAsync(IReadOnlyCollection<Claim> claims, CancellationToken cancellationToken = default)
     {
         var keyValues = claims.Select(claim => KeyValuePair.Create(claim.Type, claim.Value));
         using var mem = new MemoryStream();
-        await JsonSerializer.SerializeAsync(mem, keyValues, _jsonOptions, cancellationToken);
+        await JsonSerializer.SerializeAsync(mem, keyValues, JsonOptions, cancellationToken);
         return mem.ToArray();
     }
 
@@ -19,7 +19,7 @@ internal static class ClaimSerializer
         var mem = new MemoryStream(serializedClaims);
         var keyValues = await JsonSerializer.DeserializeAsync<IEnumerable<KeyValuePair<string, string>>>(
             mem,
-            _jsonOptions,
+            JsonOptions,
             cancellationToken: cancellationToken);
 
         return keyValues.Select(kvp => new Claim(kvp.Key, kvp.Value)).ToList();
